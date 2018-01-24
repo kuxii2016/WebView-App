@@ -11,7 +11,7 @@ $message = stripslashes(htmlspecialchars($_GET['message']));
 if ($message == "" || $username == "") {
 	die();
 }
-
+$somename = 1;
 $result = $db->prepare("INSERT INTO messages VALUES('',?,?)");
 $result->bind_param("ss", $username, $message);
 $result->execute();

@@ -1,7 +1,7 @@
 <?php
 session_start();
-require 'data/Pconfig.php';
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/Pconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -77,7 +77,8 @@ if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#FFFFFF'>";}
 ?>
 <!doctype html> 
-<html> <center>
+<center>
+<html> 
 <head>
 	<meta charset="utf-8"> 
 	<meta name="description" content="Nuclear Gaming Panel">
@@ -102,7 +103,7 @@ Theme:
 	<input type="radio" 	id="1" name="themeb" 	value="4">  	<label for="4">Gr&uuml;n</label>
 	<input type="radio" 	id="2" name="themeb" 	value="5">  	<label for="5">Orange</label> 
 	<input type="radio" 	id="3" name="themeb" 	value="6">  	<label for="6">Wei&szlig;</label>
-	<br><br><br>
+	<br>
 	<input style="width:200;height:30px" type="submit" value="Save" name="savt" />
 </form>
 <?php				//Theme Settings
@@ -124,7 +125,7 @@ Player Box:
 <form method="POST">
 	<input type="radio" 	id="1" name="boxb" 	value="1">  	<label for="1">AN</label>
 	<input type="radio" 	id="2" name="boxb" 	value="2">  	<label for="0">AUS</label> 
-	<br><br><br>
+	<br>
 	<input style="width:200;height:30px" type="submit" value="Save" name="savb" />
 </form>
 <?php			//Box Settings
@@ -145,7 +146,7 @@ News Box:
 <form method="POST">
 	<input type="radio" 	id="1" name="boxc" 	value="1">  	<label for="1">AN</label>
 	<input type="radio" 	id="2" name="boxc" 	value="2">  	<label for="0">AUS</label> 
-	<br><br><br>
+	<br>
 	<input style="width:200;height:30px" type="submit" value="Save" name="savc" />
 </form>
 <?php			//Box Settings
@@ -164,19 +165,19 @@ News Box:
 <br><br>
 Verfügbare Jobs
 <form method="POST">
-	<input type="radio" 	id="1" name="job" 	value="1">  	<label for="1">Holzf&auml;ller	</label>
-	<input type="radio" 	id="2" name="job" 	value="2">  	<label for="2">Fischer			</label> 
+	<input type="radio" 	id="1" name="job" 	value="1">  	<label for="1">Holzf&auml;ller</label>
+	<input type="radio" 	id="2" name="job" 	value="2">  	<label for="2">Fischer</label> 
  </br></br>
-	<input type="radio" 	id="1" name="job" 	value="4">  	<label for="4">G&auml;rtner		</label>
-	<input type="radio" 	id="2" name="job" 	value="5">  	<label for="5">Versorger		</label> 
-	<input type="radio" 	id="3" name="job" 	value="6">  	<label for="6">Bauer			</label></br></br>
-	<input type="radio" 	id="2" name="job" 	value="7">  	<label for="7">J&auml;ger		</label> 
-	<input type="radio" 	id="3" name="job" 	value="8">  	<label for="8">Schmied			</label> 
-	<input type="radio" 	id="1" name="job" 	value="9">  	<label for="9">Braumeister		</label></br></br>
-	<input type="radio" 	id="2" name="job" 	value="10">  	<label for="10">Informatiker	</label> 
-	<input type="radio" 	id="3" name="job" 	value="11">  	<label for="11">Beamter			</label>
-	<input type="radio" 	id="3" name="job" 	value="0">  	<label for="0">Harzer			</label></br></br></br></br>
-	<br><br>
+	<input type="radio" 	id="1" name="job" 	value="4">  	<label for="4">G&auml;rtner</label>
+	<input type="radio" 	id="2" name="job" 	value="5">  	<label for="5">Versorger</label> 
+	<input type="radio" 	id="3" name="job" 	value="6">  	<label for="6">Bauer</label></br></br>
+	<input type="radio" 	id="2" name="job" 	value="7">  	<label for="7">J&auml;ger</label> 
+	<input type="radio" 	id="3" name="job" 	value="8">  	<label for="8">Schmied</label> 
+	<input type="radio" 	id="1" name="job" 	value="9">  	<label for="9">Braumeister</label></br></br>
+	<input type="radio" 	id="2" name="job" 	value="10">  	<label for="10">Informatiker</label> 
+	<input type="radio" 	id="3" name="job" 	value="11">  	<label for="11">Beamter</label>
+	<input type="radio" 	id="3" name="job" 	value="0">  	<label for="0">Harzer</label></br></br></br></br>
+	<br>
 	<input style="width:200;height:30px" type="submit" value="Save" name="savd" />
 </form>
 <?php				//Theme Settings
@@ -199,7 +200,7 @@ Verfügbare Jobs
 	fclose($myfile);
 	//Admin Debug
 	$myfile = fopen("/var/www/html/daten/log/spieler/$username-log.html", "a");
-	fwrite ($myfile, "Spieler: $username Wechselte den Job zu: $job (APP)</br>");
+	fwrite ($myfile, "Spieler: $username Wechselte den Job zu: $job (WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);

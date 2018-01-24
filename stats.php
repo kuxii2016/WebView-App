@@ -25,8 +25,8 @@ function search($array, $key, $value)
     return $results;
 }
 session_start();
-require 'data/Pconfig.php';
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/Pconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -116,9 +116,9 @@ if ($username !== false && $theme == 1) {
 $Link = "http://stats.nuclear-gaming.de/?player=$uuid";
 ?>
 <?php
-echo "<iframe src='http://stats.nuclear-gaming.de/index.php?player=$uuid' width='340' height='510' frameborder='0'>Alternativtext</iframe> </font>"; 
+echo "<iframe src='http://stats.nuclear-gaming.de/index.php?player=$uuid' width='540' height='670' frameborder='0' style='zoom: 0.80; -moz-transform: scale(0.80); -moz-transform-origin: 0 0; -o-transform: scale(0.80); -o-transform-origin: 0 0; -webkit-transform: scale(0.80); -webkit-transform-origin: 0 0;'>Alternativtext</iframe> </font>"; 
 ?>
-</br></br></br>
+
 <table>
 <tr>
 	<form action="index.php">
@@ -127,6 +127,6 @@ echo "<iframe src='http://stats.nuclear-gaming.de/index.php?player=$uuid' width=
 			</form>
 		</tr>
 	</table>
-	</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </body> 
 </html>
+</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>

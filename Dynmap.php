@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -94,6 +94,7 @@ if ($username !== false && $theme == 1) {
 </form>
 </tr>
 </table>
-<iframe src="http://nuclear-gaming.de:1999/?worldname=Citybuild&mapname=surface&zoom=4&x=-3110&y=64&z=557" width="340" height="510">Alternativtext</iframe> </font> 
+<iframe src="http://nuclear-gaming.de:1999/?worldname=Citybuild&mapname=surface&zoom=4&x=-3110&y=64&z=557" width="350" height="520" frameBorder="0">Browser not compatible.</iframe> </font> 
 </body> 
 </html>
+</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>

@@ -1,5 +1,5 @@
 <?php
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
  
 if(!isset($_GET['userid']) || !isset($_GET['code'])) {

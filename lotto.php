@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('data/rcon.php');
-require 'data/Pconfig.php';
-require 'data/MySqlconfig.php';
-require 'data/Multiplikator.php';
+require_once('/var/www/html/data/rcon.php');
+require '/var/www/html/data/Pconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
+require '/var/www/html/data/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -131,19 +131,19 @@ if(isset($_POST['spielen']))
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-date.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-out.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
 	fwrite ($myfile, $spBetrag. " &euro; - </br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-vz.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
 	fwrite ($myfile,"Gl&uuml;cksspiel - Lotto </br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-in.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 //Jackpot
@@ -195,7 +195,7 @@ $falsche_zahlen = count(array_diff($getippteZahlen, $gezogene_zahlen));
 //Gewinn Funktion
 	if ($richtige_zahlen == 1)
 	{
-		$aGewinn = 100;
+		$aGewinn = 0;
 	}
 	else 
 	{
@@ -262,7 +262,7 @@ fwrite ($myfile, $nxsbetrag);
 fclose($myfile);
 //GS Admin Debug
 $myfile = fopen("/var/www/html/daten/log/spieler/$username-log.html", "a");
-fwrite ($myfile, "Spieler: $username Spielte Lotto und Gewann $aGewinn &euro; (APP)</br>");
+fwrite ($myfile, "Spieler: $username Spielte Lotto und Gewann $aGewinn &euro; (WEB)</br>");
 fclose($myfile);
 $timestamp = time();
 $datum = date("d.m/H:i", $timestamp);
@@ -275,7 +275,7 @@ else
 {
 }
 }
-	if ($richtige_zahlen >= 1)
+	if ($richtige_zahlen >= 2)
 	{
 			if ($rcon->connect())
 	{
@@ -286,19 +286,19 @@ else
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-date.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-out.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
 	fwrite ($myfile, "&nbsp; </br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-vz.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
 	fwrite ($myfile,"Gl&uuml;cksspiel - Lottogewinn </br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username-$uuid-in.html", "a");
+	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
 	fwrite ($myfile, $aGewinn. " &euro;</br>");
 	fclose($myfile);
 	//Letzter Gewinn
@@ -324,7 +324,7 @@ fclose($myfile);
 	</form>
 		<form action="index.php">
 	<td>
-		<input style="width:160;height:32px" type="submit" value="Start Seite"></td>
+		<input style="width:160;height:32px" type="submit" value="Hauptmenü"></td>
 	</form>
 </tr>
 </table>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -61,13 +61,13 @@ if(!isset($_SESSION['userid'])) {
  die('Bitte zuerst <a href="login.php">Einloggen</a>');
 }
 	 //schreibt den Sünder in den Log.
-	$myfile = fopen("daten/log/log.html", "a");
-	fwrite ($myfile, "Spieler: $username War im Chat(APP)</br>");
+	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+	fwrite ($myfile, "Spieler: $username War im Chat(WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("daten/log/date.html", "a");
+	$myfile = fopen("/var/www/html/daten/log/date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 ?>

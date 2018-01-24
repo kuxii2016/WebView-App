@@ -1,7 +1,7 @@
 <?php 
-require_once('data/rcon.php');
-require 'data/MySqlconfig.php';
-require 'data/Pconfig.php';
+require_once('/var/www/html/data/rcon.php');
+require '/var/www/html/data/MySqlconfig.php';
+require '/var/www/html/data/Pconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 session_start();
   use Thedudeguy\Rcon;
@@ -73,13 +73,13 @@ if(isset($_GET['register'])) {
 	 $rcon->sendCommand("whitelist add $username");
 	 $rcon->sendCommand("say Spieler $username hat sich gerade Regestriert :)");
 	 //schreibt den Sünder in den Log.
-	$myfile = fopen("daten/log/log.html", "a");
+	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
 	fwrite ($myfile, "Spieler: $username hat sich so eben Regestriert</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("daten/log/date.html", "a");
+	$myfile = fopen("/var/www/html/daten/log/date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
  }

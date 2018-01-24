@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('data/rcon.php');
-require 'data/Pconfig.php';
-require 'data/MySqlconfig.php';
-require 'data/Multiplikator.php';
+require_once('/var/www/html/data/rcon.php');
+require '/var/www/html/data/Pconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
+require '/var/www/html/data/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -96,14 +96,14 @@ if ($username !== false && $theme == 1) {
 <form action="lotto.php">
 <td><input style="width:150;height:32px" type="submit" value="Lotto"></td>
 </form>
-<form action="http://minecraft.nuclear-gaming.de/lucky.php">
-<td><input style="width:150;height:32px" type="submit" value="Lucky"></td>
+<form action="Casino.php">
+<td><input style="width:150;height:32px" type="submit" value=""></td>
 </form>
 </tr>
 
 <tr>
-<form action="http://minecraft.nuclear-gaming.de/slot.php">
-<td><input style="width:150;height:32px" type="submit" value="Slot"></td>
+<form action="Casino.php">
+<td><input style="width:150;height:32px" type="submit" value=""></td>
 </form>
 <form action="Casino.php">
 <td><input style="width:150;height:32px" type="submit" value=""></td>
@@ -126,7 +126,7 @@ if ($username !== false && $theme == 1) {
 <tr>
 <tr>
 <form action="index.php">
-<td><input style="width:300;height:40px" type="submit" value="Start Seite"></td>
+<td><input style="width:300;height:40px" type="submit" value="Hauptmenü"></td>
 </tr>
 </form>
 </table>

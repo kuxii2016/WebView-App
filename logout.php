@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -58,7 +58,7 @@ if(!isset($_SESSION['userid']) && isset($_COOKIE['identifier']) && isset($_COOKI
  }
 }
 if(!isset($_SESSION['userid'])) {
- die('Bitte zuerst <a href="login.php">Einloggen</a>');
+ die('<center></br></br><body style="background-color:#151515"><font color="#01DF01">Bitte zuerst <a href="login.php">Einloggen</a>');
  	//schreibt den Sünder in den Log.
 	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
 	fwrite ($myfile, "Spieler: $username Loggte sich ein(WEB).</br>");
@@ -82,13 +82,13 @@ setcookie("securitytoken","",time()-(3600*24*365));
  
 echo "Logout erfolgreich";
 	 //schreibt den Sünder in den Log.
-	$myfile = fopen("daten/log/log.html", "a");
-	fwrite ($myfile, "Spieler: $username Loggte sich aus(APP)</br>");
+	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+	fwrite ($myfile, "Spieler: $username Loggte sich aus(WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("daten/log/date.html", "a");
+	$myfile = fopen("/var/www/html/daten/log/date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 ?>

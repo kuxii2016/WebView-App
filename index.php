@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 require '/var/www/html/data/job.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
@@ -63,17 +63,8 @@ if(!isset($_SESSION['userid']) && isset($_COOKIE['identifier']) && isset($_COOKI
 if(!isset($_SESSION['userid'])) {
  die('Bitte zuerst <a href="login.php">Einloggen</a>');
 }
- 	//schreibt den Sünder in den Log.
-	//$myfile = fopen("/var/www/html/daten/log/log.html", "a");
-	//fwrite ($myfile, "Spieler: $username Loggte sich ein(APP).</br>");
-	//fclose($myfile);
-	//$timestamp = time();
-	//$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-	//$myfile = fopen("/var/www/html/daten/log/date.html", "a");
-	//fwrite ($myfile, $datum. "&nbsp;</br>");
-	//fclose($myfile);
 ?>
+
 <?php 	//Menü Theme
 if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#151515'><font color='#01DF01'>";
@@ -88,7 +79,7 @@ if ($username !== false && $theme == 1) {
 }elseif ($username !== false && $theme == 6){
 	echo "<body style='background-color:#FFFFFF'>";}
 ?>
-
+<center>
 <?php   //USERLOGGED BOX
 	if ($job== 0){
 	$jobTitles = "HatzIV";
@@ -100,7 +91,7 @@ if ($username !== false && $theme == 1) {
 	$jobTitles = $fLohnVZ;
 	}
 	if ($job >= 3){
-	$jobTitles = $fLohnVZ;
+	$jobTitles = $vkLohnVZ;
 	}
 	if ($job >= 4){
 	$jobTitles = $gLohnVZ;
@@ -132,7 +123,7 @@ if ($username !== false && $theme == 1) {
 if ( $dbdata['box1'] == 1) {
 $userid = $_SESSION['userid'];
 echo "<table border=0 bgcolor='green' width=100% >";
-{
+{ //UserBox
   echo "<tr>";
   echo "<td><img src='http://minotar.net/avatar/$username/10.png' alt='$username' width='30' height='30'></td>";
   echo "<td width=30%><font face='Verdana'><font color='#FFFFFF'>",$username,"</td>";
@@ -160,38 +151,37 @@ echo "<h1>Hauptmenü</h1>";
 	<meta http-equiv=“pragma“ content=“no-cache“>
 	<meta http-equiv=“expires“ content=“0″>
 </head>
-
 <body> 
 </br> 
 <table>
 	<tr>
-		<form action="konto.php">
+		<form action="/bank/index.php">
 			<td>
-				<input style="width:167;height:32px" type="submit" value="Hazemaze Bank">
+				<input style="width:167;height:32px" type="submit" value="Mine Bank">
 			</td>
 		</form>
-		<form action="info.php">
+		<form action="spieler.php">
 			<td>
 				<input style="width:167;height:32px" type="submit" value="Spieler Info">
 			</td>
 		</form>
 	</tr>
 	<tr>
-		<form action="plots.php">
+		<form action="plots/index.php">
 			<td>
 				<input style="width:167;height:32px" type="submit" value="Grundstücke"></td>
 		</form>
-		<form action="sozih.php">
+		<form action="jobcenter/index.php">
 			<td>
-				<input style="width:167;height:32px" type="submit" value="Sozial Hilfe"></td>
+				<input style="width:167;height:32px" type="submit" value="Job Center"></td>
 		</form>
 	</tr>
 	<tr>
-		<form action="emeter.php">
+		<form action="luem/index.php">
 			<td>
 				<input style="width:167;height:32px" type="submit" value="Luem Energy"></td>
 		</form>
-		<form action="shop.php">
+		<form action="shop/index.php">
 			<td>
 				<input style="width:167;height:32px" type="submit" value="Online-Shop"></td>
 		</form>
@@ -221,7 +211,7 @@ echo "<h1>Hauptmenü</h1>";
 		<td>
 			<input style="width:167;height:32px" type="submit" value="Einstellungen"></td>
 	</form>
-	<form action="job.php">
+	<form action="job/index.php">
 		<td>
 			<input style="width:167;height:32px" type="submit" value="Lohn Büro"></td>
 	</form>
@@ -231,6 +221,16 @@ echo "<h1>Hauptmenü</h1>";
 		<td>
 			<input style="width:167;height:32px" type="submit" value="Casino"></td>
 	</form>
+	<form action="gewerbe/index.php">
+		<td>
+			<input style="width:167;height:32px" type="submit" value="Gewerbe"></td>
+	</form>
+</tr>
+	<tr>
+	<form action="index.php">
+		<td>
+			<input style="width:167;height:32px" type="submit" value="AKW Buchwald"></td>
+	</form>
 	<form action="logout.php">
 		<td>
 			<input style="width:167;height:32px" type="submit" value="Ausloggen"></td>
@@ -239,14 +239,14 @@ echo "<h1>Hauptmenü</h1>";
 	<?php if ($dbdata['rechte'] == 1) {
 	echo' 
 	<tr>
-	<form action="staatskasse.php">
+	<form action="staat/index.php">
 	<td>
 	<input style="width:167;height:32px" type="submit" value="Staatskasse">
 	</td>
 	</form>
-	<form action="ssetting.php">
+	<form action="buergermeister/index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Admin Menü">
+	<input style="width:167;height:32px" type="submit" value="Bürgermeister Menü">
 	</td>
 	</form> ';
 }
@@ -256,14 +256,14 @@ else {
 	<?php if ($dbdata['rechte'] == 2) {
 	echo' 
 	<tr>
-	<form action="staatskasse.php">
+	<form action="staat/index.php">
 	<td>
 	<input style="width:167;height:32px" type="submit" value="Staatskasse">
 	</td>
 	</form>
-	<form action="ssetting.php">
+	<form action="buergermeister/index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Admin Menü">
+	<input style="width:167;height:32px" type="submit" value="Bürgermeister Menü">
 	</td>
 	</form> ';
 	echo' 
@@ -285,14 +285,14 @@ else {
 	<?php if ($dbdata['rechte'] == 3) {
 	echo' 
 	<tr>
-	<form action="staatskasse.php">
+	<form action="staat/index.php">
 	<td>
 	<input style="width:167;height:32px" type="submit" value="Staatskasse">
 	</td>
 	</form>
-	<form action="ssetting.php">
+	<form action="buergermeister/index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Admin Menü">
+	<input style="width:167;height:32px" type="submit" value="Bürgermeister Menü">
 	</td>
 	</form> ';
 	echo' 
@@ -302,9 +302,9 @@ else {
 	<input style="width:167;height:32px" type="submit" value="Notiz Block">
 	</td>
 	</form>
-	<form action="/RCON/index.php">
+	<form action="/admin/index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Console">
+	<input style="width:167;height:32px" type="submit" value="Admin Menü">
 	</td>
 	</form> ';
 }
@@ -312,23 +312,24 @@ else {
 }
 ?>
 	</table>
-
 <h6>
 <?php
-echo "<center>Panel version: 2.2 | &copy; by Kuxii .</center></br></br>";
+echo "<center>Panel version: 2.5 | &copy; by Kuxii .</center></br></br>";
 ?>
+
+</br></br>
 <?php
-	$myfile = fopen("daten/log/anews.txt", "r");
+	$myfile = fopen("/var/www/html/daten/log/anews.txt", "r");
 	$Text = fgets($myfile);
-?></br></br></br></br></br></br></br></br></br></br></br>
+?></br></br></br></br>
 <?php   //USERLOGGED BOX
 if ( $dbdata['box2'] == 1) {
 $userid = $_SESSION['userid'];
 echo "<table border=0 bgcolor='green' >";
-{
+{	//news Ticker
   echo "<tr>";
-  echo "<td width=70><font face='Verdana'><font color='#FFFFFF'>News:</td>";
-  echo "<td width=600><font face='Verdana'><font color='#FFFFFF'><marquee>$Text</marquee></td>";
+  echo "<td width=10%><font face='Verdana'><font color='#FFFFFF'>News:</td>";
+  echo "<td width=80%><font face='Verdana'><font color='#FFFFFF'><marquee>$Text</marquee></td>";
   echo "</tr>";
 }echo "</table>";
 }
@@ -338,6 +339,6 @@ echo "";
 echo "<h1></h1>";
 }
 ?>
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
+</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </body> 
 </html>

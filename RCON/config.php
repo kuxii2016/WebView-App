@@ -1,10 +1,10 @@
 <?php
-$rconHost = "";
+$rconHost = "84.200.223.174";
 $rconPort = 25575;
-$rconPassword = "";
+$rconPassword = "minecraft2017";
 
-$host = "";
+$host = "84.200.223.174";
 $port = 25575;
-$password = "";
+$password = "minecraft2017";
 $timeout = 3; 
 ?>

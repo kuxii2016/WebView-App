@@ -1,5 +1,5 @@
 <?php 
-require 'data/MySqlconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 session_start();
 
@@ -40,10 +40,11 @@ if(isset($_GET['login'])) {
  setcookie("identifier",$identifier,time()+(3600*24*365)); //1 Jahr Gültigkeit
  setcookie("securitytoken",$securitytoken,time()+(3600*24*365)); //1 Jahr Gültigkeit
  }
- die('Login erfolgreich. Weiter zu <a href="index.php">internen Bereich</a>');
+ die('<center></br></br><body style="background-color:#151515"><font color="#01DF01">Login erfolgreich. Weiter zu <a href="index.php">internen Bereich</a>');
+	header('Location: index.php');
   	//schreibt den Sünder in den Log.
 	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
-	fwrite ($myfile, "Spieler: $username Loggte sich ein(APP).</br>");
+	fwrite ($myfile, "Spieler: $username Loggte sich ein(WEB).</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
@@ -57,7 +58,7 @@ if(isset($_GET['login'])) {
  
 }
 ?>
-<!DOCTYPE html> 
+<!DOCTYPE html> <center><body style='background-color:#151515'><font color='#01DF01'>
 <html> 
 <head>
   <title>Login</title> 
@@ -81,5 +82,18 @@ Dein Passwort:<br>
  
 <input type="submit" value="Abschicken">
 </form>
+<br><br>
+<a href="register.php"> -->Register<-- </a><br>
+<a href="passwortvergessen.php"> -->Passwortvergessen<-- </a><br><br><br><br><br><br><br><br><br><br>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Login -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-6834229371954973"
+     data-ad-slot="6288282503"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 </body>
 </html>

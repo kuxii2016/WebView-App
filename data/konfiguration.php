@@ -12,7 +12,7 @@ define ( 'MYSQL_HOST',      'localhost' );
  
 // bei XAMPP ist der MYSQL_Benutzer: root
 define ( 'MYSQL_BENUTZER',  'root' );
-define ( 'MYSQL_KENNWORT',  '' );
+define ( 'MYSQL_KENNWORT',  '22462246abc' );
 // für unser Bsp. nennen wir die DB adressverwaltung
 define ( 'MYSQL_DATENBANK', 'MinecraftApp' );
 ?>

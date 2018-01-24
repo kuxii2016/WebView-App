@@ -1,8 +1,8 @@
 <?php
 session_start();
-require 'data/Pconfig.php';
-require 'data/MySqlconfig.php';
-require 'data/Multiplikator.php';
+require '/var/www/html/data/Pconfig.php';
+require '/var/www/html/data/MySqlconfig.php';
+require '/var/www/html/data/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");

@@ -16,6 +16,5 @@ while ($r = $result->fetch_row()) {
 	echo $r[1];
 	echo "\\";
 	echo $r[2];
-
 	echo "\n";
 }
