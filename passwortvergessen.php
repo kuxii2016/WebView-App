@@ -13,8 +13,8 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- //Bitte euer_geheim_string durch einen zufälligen String mit >12 Zeichen austauschen
- $str = md5(uniqid('euer_geheimer_string', true));
+ //Bitte euer_geheim_string durch einen zufÃ¤lligen String mit >12 Zeichen austauschen
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -33,27 +33,27 @@ if(isset($_GET['send']) ) {
  if($user === false) {
  $error = "<b>Kein Benutzer gefunden</b>";
  } else {
- //Überprüfe, ob der User schon einen Passwortcode hat oder ob dieser abgelaufen ist 
+ //ÃœberprÃ¼fe, ob der User schon einen Passwortcode hat oder ob dieser abgelaufen ist 
  $passwortcode = random_string();
  $statement = $pdo->prepare("UPDATE users SET passwortcode = :passwortcode, passwortcode_time = NOW() WHERE id = :userid");
  $result = $statement->execute(array('passwortcode' => sha1($passwortcode), 'userid' => $user['id']));
  
  $empfaenger = $user['email'];
- $betreff = "Neues Passwort für deinen Account auf www.php-einfach.de"; //Ersetzt hier den Domain-Namen
+ $betreff = "Neues Passwort fÃ¼r deinen Account auf www.php-einfach.de"; //Ersetzt hier den Domain-Namen
  $from = "From: Vorname Nachname <absender@domain.de>"; //Ersetzt hier euren Name und E-Mail-Adresse
  $url_passwortcode = 'http://localhost/passwortzuruecksetzen.php?userid='.$user['id'].'&code='.$passwortcode; //Setzt hier eure richtige Domain ein
  $text = 'Hallo '.$user['vorname'].',
-für deinen Account auf www.php-einfach.de wurde nach einem neuen Passwort gefragt. Um ein neues Passwort zu vergeben, rufe innerhalb der nächsten 24 Stunden die folgende Website auf:
+fÃ¼r deinen Account auf www.php-einfach.de wurde nach einem neuen Passwort gefragt. Um ein neues Passwort zu vergeben, rufe innerhalb der nÃ¤chsten 24 Stunden die folgende Website auf:
 '.$url_passwortcode.'
  
 Sollte dir dein Passwort wieder eingefallen sein oder hast du dies nicht angefordert, so bitte ignoriere diese E-Mail.
  
-Viele Grüße,
+Viele GrÃ¼ÃŸe,
 dein PHP-Einfach.de-Team';
  
  mail($empfaenger, $betreff, $text, $from);
  
- echo "Ein Link um dein Passwort zurückzusetzen wurde an deine E-Mail-Adresse gesendet."; 
+ echo "Ein Link um dein Passwort zurÃ¼ckzusetzen wurde an deine E-Mail-Adresse gesendet."; 
  $showForm = false;
  }
  }
