@@ -1,29 +1,17 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-
-//		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -35,7 +23,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -60,7 +48,7 @@ if(!isset($_SESSION['userid'])) {
  die('Bitte zuerst <a href="login.php">Einloggen</a>');
 }
 ?>
-<?php 	//Menü Theme
+<?php 
 if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#151515'><font color='#01DF01'>";
 }elseif ($username !== false && $theme == 2){
@@ -77,9 +65,8 @@ if ($username !== false && $theme == 1) {
 <?php
 	$_name1 = $_POST['name1'][0];
 	$_uuid1 = $_POST['uuid1'][0];
-	//Geld Lesen
-	$datawallet = "$wallet/$_uuid1.json"; //WalletPfad/+UserIDfromSession
-	//Json Lesen
+
+	$datawallet = "$wallet/$_uuid1.json";
     $jsondata = file_get_contents($datawallet);
 	$data = json_decode($jsondata,true);
 	$namen = $data;
@@ -93,7 +80,7 @@ if ($username !== false && $theme == 1) {
 	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 	<meta name="author" content="Michael Kux">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Spieler Logs</title> 
+	<title>EE :: Spieler Logs</title> 
 </head> <center>
 <h1>User Log Admin Funktion</h1> </br></br>
 <?
@@ -120,8 +107,8 @@ Daten von von: <?php echo " $_name1 ";?><?php echo "";
 </tr>
 </br></br>
 <tr>
-	<td bgcolor=#BDBDBD><?php include("/var/www/html/daten/log/spieler/$_name1-date.html");?></td>
-	<td bgcolor=#A4A4A4><?php include("/var/www/html/daten/log/spieler/$_name1-log.html");?></td>
+	<td bgcolor=#BDBDBD><?php include("../cache/log/player/$_name1-date.html");?></td>
+	<td bgcolor=#A4A4A4><?php include("../cache/log/player/$_name1-log.html");?></td>
 
 </tr>
 </table>
@@ -135,4 +122,4 @@ Daten von von: <?php echo " $_name1 ";?><?php echo "";
 	<input style="width:150;height:32px" type="submit" value="Zur&uuml;ck"></td>
 </form>
 </head> 
-<body> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<body>

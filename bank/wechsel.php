@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('../config/rcon.php');
+require '../config/config.php';
+require '../config/Multiplikator.php';
+require '../config/IDs.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -25,7 +25,13 @@ $theme = $dbdata['theme'];
 $rechte = $dbdata['rechte'];
 //---Spieler-Box
 $rechte = $dbdata['box1'];
-
+//---Sprechfile
+if($dbdata['sprache'] == 1){
+require '../conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require '../conversation/2.php';
+}
 //		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
@@ -38,7 +44,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -89,10 +95,10 @@ if ($username !== false && $theme == 1) {
 	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 	<meta name="author" content="Michael Kux">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Wechselbude</title> 
+	<title>EE :: <?php echo $moneyswitch ?></title> 
 </head> <center>
 <body> 
-	<h1>Geldwechsel</h1></br>
+	<h1><?php echo $moneyswitch ?></h1></br>
 <table style="width:90%" border=0 bgcolor=#2E2E2E>
   <tr>
     <th style="width:10%"><font color="white">Nummer</th>
@@ -101,61 +107,61 @@ if ($username !== false && $theme == 1) {
   </tr> 
   <tr>
     <td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;1 </td>
-    <td><?php echo " <center><img src=\img/note_1.png ALT=1&euro;, title=1&euro;>";?></td> 
-    <td><font color="white"> <center>1 €</td>
+    <td><?php echo " <center><img src=note_1.png ALT=1&euro;, title=1&euro;>";?></td> 
+    <td><font color="white"> <center>1 <?php echo $GuthabenIcon ?></td>
   </tr>
   <tr>
     <td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;2 </td>
-    <td><?php echo " <center><img src=\img/note_2.png ALT=2&euro;, title=2&euro;>";?></td>
-    <td><font color="white"> <center>2 €</td>
+    <td><?php echo " <center><img src=note_2.png ALT=2&euro;, title=2&euro;>";?></td>
+    <td><font color="white"> <center>2 <?php echo $GuthabenIcon ?></td>
   </tr>
     <tr>
 	<td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;3 </td>
-    <td><?php echo " <center><img src=\img/note_5.png ALT=5&euro;, title=5&euro;>";?></td>
-    <td><font color="white"> <center>5 €</td>
+    <td><?php echo " <center><img src=note_5.png ALT=5&euro;, title=5&euro;>";?></td>
+    <td><font color="white"> <center>5 <?php echo $GuthabenIcon ?></td>
   </tr>
   
     <tr>
      <td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;4 </td>
-    <td><?php echo " <center><img src=\img/note_10.png ALT=10&euro;, title=10&euro;>";?></td> 
-    <td><font color="white"> <center>10 €</td>
+    <td><?php echo " <center><img src=note_10.png ALT=10&euro;, title=10&euro;>";?></td> 
+    <td><font color="white"> <center>10 <?php echo $GuthabenIcon ?></td>
   </tr>
   <tr>
     <td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;5 </td>
-    <td><?php echo " <center><img src=\img/note_20.png ALT=20&euro;, title=20&euro;>";?></td>
-    <td><font color="white"> <center>20 €</td>
+    <td><?php echo " <center><img src=note_20.png ALT=20&euro;, title=20&euro;>";?></td>
+    <td><font color="white"> <center>20 <?php echo $GuthabenIcon ?></td>
   </tr>
     <tr>
 	<td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;6 </td>
-    <td><?php echo " <center><img src=\img/note_50.png ALT=50&euro;, title=50&euro;>";?></td>
-    <td><font color="white"> <center>50 €</td>
+    <td><?php echo " <center><img src=note_50.png ALT=50&euro;, title=50&euro;>";?></td>
+    <td><font color="white"> <center>50 <?php echo $GuthabenIcon ?></td>
   </tr>
   
     <tr>
      <td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;7 </td>
-    <td><?php echo " <center><img src=\img/note_100.png ALT=100&euro;, title=100&euro;>";?></td> 
-    <td><font color="white"> <center>100 €</td>
+    <td><?php echo " <center><img src=note_100.png ALT=100&euro;, title=100&euro;>";?></td> 
+    <td><font color="white"> <center>100 <?php echo $GuthabenIcon ?></td>
   </tr>
   <tr>
     <td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;8 </td>
-    <td><?php echo " <center><img src=\img/note_200.png ALT=200&euro;, title=200&euro;>";?></td>
-    <td><font color="white"> <center>200 €</td>
+    <td><?php echo " <center><img src=note_200.png ALT=200&euro;, title=200&euro;>";?></td>
+    <td><font color="white"> <center>200 <?php echo $GuthabenIcon ?></td>
   </tr>
     <tr>
 	<td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;9 </td>
-    <td><?php echo " <center><img src=\img/note_500.png ALT=500&euro;, title=500&euro;>";?></td>
-    <td><font color="white"> <center>500 €</td>
+    <td><?php echo " <center><img src=note_500.png ALT=500&euro;, title=500&euro;>";?></td>
+    <td><font color="white"> <center>500 <?php echo $GuthabenIcon ?></td>
   </tr>
      <tr>
 	<td><font color="white"> <center>&nbsp;&nbsp;&nbsp;&nbsp;10 </td>
-    <td><?php echo " <center><img src=\img/note_1000.png ALT=1000&euro;, title=1000&euro;>";?></td>
-    <td><font color="white"> <center>1000 €</td>
+    <td><?php echo " <center><img src=note_1000.png ALT=1000&euro;, title=1000&euro;>";?></td>
+    <td><font color="white"> <center>1000 <?php echo $GuthabenIcon ?></td>
   </tr>
 </table>
 <?php
 	$menge = $_POST['menge'][0];
 	$idp = $_POST['Zahlmethode'];
-	if ($idp == 5182)
+	if ($idp == $idp1)
 	{
 		$gws = 1;
 	}
@@ -164,7 +170,7 @@ if ($username !== false && $theme == 1) {
 		
 	}
 	
-	if ($idp == 5183)
+	if ($idp == $idp2)
 	{
 		$gws = 2;
 	}
@@ -172,7 +178,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5184)
+	if ($idp == $idp3)
 	{
 		$gws = 5;
 	}
@@ -180,7 +186,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5185)
+	if ($idp == $idp4)
 	{
 		$gws = 10;
 	}
@@ -188,7 +194,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5186)
+	if ($idp == $idp5)
 	{
 		$gws = 20;
 	}
@@ -196,7 +202,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5187)
+	if ($idp == $idp6)
 	{
 		$gws = 50;
 	}
@@ -204,7 +210,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5188)
+	if ($idp == $idp7)
 	{
 		$gws = 100;
 	}
@@ -212,7 +218,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5189)
+	if ($idp == $idp8)
 	{
 		$gws = 200;
 	}
@@ -220,7 +226,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5190)
+	if ($idp == $idp9)
 	{
 		$gws = 500;
 	}
@@ -228,7 +234,7 @@ if ($username !== false && $theme == 1) {
 	{
 		
 	}
-	if ($idp == 5191)
+	if ($idp == $idp10)
 	{
 		$gws = 1000;
 	}
@@ -247,32 +253,32 @@ if ($username !== false && $theme == 1) {
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
-	fwrite ($myfile, $preis. " &euro; - </br>");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-out.html", "a");
+	fwrite ($myfile, $preis. " $GuthabenIcon - </br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
-	fwrite ($myfile,"Geldwechsel - $idp:ID - $menge:St </br>");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-vz.html", "a");
+	fwrite ($myfile,"$moneyswitch - $idp:ID - $menge:St </br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-in.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 	$newState = $dbdata['geld'] - $preis;
 	$statement = $pdo->prepare("UPDATE `users` SET `geld` = '$newState' WHERE name = '$username' ");
 	$result = $statement->execute(array("UPDATE `users` SET `geld` = '$newState' WHERE name = '$username' "));
 	//GS Admin Debug
-	$myfile = fopen("/var/www/html/daten/log/spieler/$username-log.html", "a");
+	$myfile = fopen("../cache/log/player/$username-log.html", "a");
 	fwrite ($myfile, "Spieler: $username Geld Gewechselt $idp : $menge für $preis € (WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/log/spieler/$username-date.html", "a");
+	$myfile = fopen("../cache/log/player/$username-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 }
@@ -282,22 +288,22 @@ else
 }
 ?>
 <form method="POST">
-	<input type="radio" 	id="1" name="Zahlmethode" 	value="5182">  	<label for="1"> 1</label>
-	<input type="radio" 	id="2" name="Zahlmethode" 	value="5183">  	<label for="2"> 2</label> 
-	<input type="radio" 	id="3" name="Zahlmethode" 	value="5184">  	<label for="3"> 3</label>
-	<input type="radio" 	id="4" name="Zahlmethode" 	value="5185">  	<label for="4"> 4</label> 
-	<input type="radio" 	id="5" name="Zahlmethode" 	value="5186">  	<label for="5"> 5</label>
+	<input type="radio" 	id="1" name="Zahlmethode" 	value="<?php echo $idp1; ?>">  	<label for="1"> 1</label>
+	<input type="radio" 	id="2" name="Zahlmethode" 	value="<?php echo $idp2; ?>">  	<label for="2"> 2</label> 
+	<input type="radio" 	id="3" name="Zahlmethode" 	value="<?php echo $idp3; ?>">  	<label for="3"> 3</label>
+	<input type="radio" 	id="4" name="Zahlmethode" 	value="<?php echo $idp4; ?>">  	<label for="4"> 4</label> 
+	<input type="radio" 	id="5" name="Zahlmethode" 	value="<?php echo $idp5; ?>">  	<label for="5"> 5</label>
  <br>
-	<input type="radio" 	id="6" name="Zahlmethode" 	value="5187">  	<label for="6"> 6</label>
-	<input type="radio" 	id="7" name="Zahlmethode" 	value="5188">  	<label for="7"> 7</label>
-	<input type="radio" 	id="8" name="Zahlmethode" 	value="5189">  	<label for="8"> 8</label> 
-	<input type="radio" 	id="9" name="Zahlmethode" 	value="5190">  	<label for="9"> 9</label>
-	<input type="radio" 	id="10" name="Zahlmethode" 	value="5191">  	<label for="10"> 10</label>
+	<input type="radio" 	id="6" name="Zahlmethode" 	value="<?php echo $idp6; ?>">  	<label for="6"> 6</label>
+	<input type="radio" 	id="7" name="Zahlmethode" 	value="<?php echo $idp7; ?>">  	<label for="7"> 7</label>
+	<input type="radio" 	id="8" name="Zahlmethode" 	value="<?php echo $idp8; ?>">  	<label for="8"> 8</label> 
+	<input type="radio" 	id="9" name="Zahlmethode" 	value="<?php echo $idp9; ?>">  	<label for="9"> 9</label>
+	<input type="radio" 	id="10" name="Zahlmethode" 	value="<?php echo $idp10; ?>">  	<label for="10"> 10</label>
  <br><br> 
  St&uuml;ckzahl: <br><input style="width:160;height:32px" type="text" name="menge[]" value="max: 64" /><br></br>
 	<input style="width:160;height:32px" type="submit" value="Kaufen" name="kaufen" />  
 </form>
-Summe: <?php echo " $preis". " &euro;"; ?>
+Summe: <?php echo " $preis". " $GuthabenIcon"; ?>
 </body> 
 </html>
 </br></br>
@@ -305,14 +311,13 @@ Summe: <?php echo " $preis". " &euro;"; ?>
 	<tr>
 		<form action="index.php">
 	<td>
-		<input style="width:160;height:32px" type="submit" value="zur&uuml;ck"></td>
+		<input style="width:160;height:32px" type="submit" value="<?php echo $zuruek ?>"></td>
 	</form>
 		<form action="../index.php">
 	<td>
-		<input style="width:160;height:32px" type="submit" value="Hauptmenü"></td>
+		<input style="width:160;height:32px" type="submit" value="<?php echo $PageIndex ?>"></td>
 	</form>
 </tr>
 </table>
 </body> 
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </html>

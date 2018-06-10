@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -35,7 +35,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -82,13 +82,13 @@ if ($username !== false && $theme == 1) {
 	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 	<meta name="author" content="Michael Kux">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Staatskasse</title> 
+	<title>EE :: Staatskasse</title> 
 </head> 
 <body> 
 	<h1>Staatskasse</h1> 
 	<h3>Konto Bewegungen:</h3> 
 <?php
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
 	$sbetrag = fgets($myfile);
 ?>	
 <table style="width:90%" border=0 bgcolor=#F7FE2E>	
@@ -101,10 +101,10 @@ if ($username !== false && $theme == 1) {
 </tr>
 </br></br>
 <tr>
-	<td bgcolor=#F3F781><?php include("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html");?></td>
-	<td bgcolor=#F3E2A9><?php include("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html");?></td>
-	<td bgcolor=#F3F781><?php include("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html");?></td>
-	<td bgcolor=#F3E2A9><?php include("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html");?></td>
+	<td bgcolor=#F3F781><?php include("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html");?></td>
+	<td bgcolor=#F3E2A9><?php include("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html");?></td>
+	<td bgcolor=#F3F781><?php include("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html");?></td>
+	<td bgcolor=#F3E2A9><?php include("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html");?></td>
 </tr>
 <tr>
 	<td bgcolor=#F7FE2E>&nbsp; </td>
@@ -125,21 +125,19 @@ if ($username !== false && $theme == 1) {
 			<td>
 				<input style="width:100;height:32px" type="submit" value="Hauptmenü"></td>
 			</form>
-		<form action="pay.php">
+		<form action="../buergermeister/index.php">
 	<td>
-		<input style="width:102;height:32px" type="submit" value="User Bezahlung"></td>
+		<input style="width:102;height:32px" type="submit" value="Zurück"></td>
 			</form>
-		<form action="shop.php">
+		<form action="leer.php">
 	<td>
-		<input style="width:102;height:32px" type="submit" value="Staats Shop"></td>
+		<input style="width:102;height:32px" type="submit" value="Löschen"></td>
 			</form>
-				<form action='leer.php' method='POST'>
+				<form action='index.php' method='POST'>
 	<td>
-		<input style="width:90;height:32px" type="submit" value="Löschen" name="Löschen" /></td>
+		<input style="width:90;height:32px" type="submit" value="" name="" /></td>
 	</form>
 </tr>
 </table>
-</br></br></br>
 </body> 
 </html>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

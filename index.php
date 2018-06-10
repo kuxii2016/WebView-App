@@ -1,33 +1,29 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/job.php';
+require 'config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-//---Spieler-Box
 $rechte = $dbdata['box2'];
-//---Spieler-job
 $job = $dbdata['job'];
-//		LOGIN Prüfung
+$sprache = $dbdata['sprache'];
+$currentSprache = $Laguane;
+if($sprache == 1){
+require 'conversation/1.php';
+$Laguane = "DE ";
+}
+elseif($sprache == 2){
+require 'conversation/2.php';
+$Laguane = "EN ";
+}
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -39,7 +35,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -65,7 +61,7 @@ if(!isset($_SESSION['userid'])) {
 }
 ?>
 
-<?php 	//Menü Theme
+<?php
 if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#151515'><font color='#01DF01'>";
 }elseif ($username !== false && $theme == 2){
@@ -80,7 +76,7 @@ if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#FFFFFF'>";}
 ?>
 <center>
-<?php   //USERLOGGED BOX
+<?php
 	if ($job== 0){
 	$jobTitles = "HatzIV";
 	}
@@ -123,12 +119,13 @@ if ($username !== false && $theme == 1) {
 if ( $dbdata['box1'] == 1) {
 $userid = $_SESSION['userid'];
 echo "<table border=0 bgcolor='green' width=100% >";
-{ //UserBox
+{ 
   echo "<tr>";
   echo "<td><img src='http://minotar.net/avatar/$username/10.png' alt='$username' width='30' height='30'></td>";
-  echo "<td width=30%><font face='Verdana'><font color='#FFFFFF'>",$username,"</td>";
-  echo "<td width=30%><font face='Verdana'><font color='#FFFFFF'>Job: ".$jobTitles ."</td>";
-  echo "<td width=60%><font face='Verdana'><font color='#FFFFFF'>","Guthaben: ".$geld." €","</td>";
+  echo "<td width=28%><font face='Verdana'><font color='#FFFFFF'>",$username,"</td>";
+  echo "<td width=30%><font face='Verdana'><font color='#FFFFFF'>".$AktuellerJob."".$jobTitles ."</td>";
+  echo "<td width=60%><font face='Verdana'><font color='#FFFFFF'>","".$Guthaben."".$geld."".$GuthabenIcon,"</td>";
+  echo "<td width=15%><font face='Verdana'><font color='#FFFFFF'>","".$Laguane."","</td>";
   echo "</tr>";
 }echo "</table>";
 }
@@ -140,108 +137,94 @@ echo "<h1>Hauptmenü</h1>";
 ?>
 <!doctype html> 
 <html> 
-<head>
-	<meta charset="utf-8"> 
-	<meta name="description" content="Nuclear Gaming Panel">
-	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
-	<meta name="author" content="Michael Kux">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Kontrollcenter</title> 
-	<meta http-equiv=“cache-control“ content=“no-cache“>
-	<meta http-equiv=“pragma“ content=“no-cache“>
-	<meta http-equiv=“expires“ content=“0″>
-</head>
+	<head>
+		<meta charset="utf-8"> 
+		<meta name="description" content="Economy Expansion">
+		<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Economy Expansion, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
+		<meta name="author" content="Michael Kux">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>EE :: Home</title> 
+		<meta http-equiv=“cache-control“ content=“no-cache“>
+		<meta http-equiv=“pragma“ content=“no-cache“>
+		<meta http-equiv=“expires“ content=“0″>
+	</head>
 <body> 
-</br> 
-<table>
-	<tr>
-		<form action="/bank/index.php">
+	</br> 
+		<table>
+			<tr>
+				<form action="bank/index.php">
 			<td>
-				<input style="width:167;height:32px" type="submit" value="Mine Bank">
+				<input style="width:167;height:32px" type="submit" value="<?php echo $button1; ?>">
 			</td>
 		</form>
-		<form action="spieler.php">
-			<td>
-				<input style="width:167;height:32px" type="submit" value="Spieler Info">
-			</td>
-		</form>
-	</tr>
+			<form action="spieler.php">
+				<td>
+					<input style="width:167;height:32px" type="submit" value="<?php echo $button2; ?>">
+				</td>
+			</form>
+		</tr>
+	
 	<tr>
 		<form action="plots/index.php">
 			<td>
-				<input style="width:167;height:32px" type="submit" value="Grundstücke"></td>
+				<input style="width:167;height:32px" type="submit" value="<?php echo $button3; ?>"></td>
 		</form>
-		<form action="jobcenter/index.php">
+			<form action="jobcenter/index.php">
+				<td>
+					<input style="width:167;height:32px" type="submit" value="<?php echo $button4; ?>"></td>
+			</form>
+		</tr>
+	
+	<tr>
+		<form action="energy/index.php">
 			<td>
-				<input style="width:167;height:32px" type="submit" value="Job Center"></td>
+				<input style="width:167;height:32px" type="submit" value="<?php echo $button5; ?>"></td>
+			</form>
+				<form action="shop/index.php">
+			<td>
+				<input style="width:167;height:32px" type="submit" value="<?php echo $button6; ?>"></td>
 		</form>
 	</tr>
+	
 	<tr>
-		<form action="luem/index.php">
-			<td>
-				<input style="width:167;height:32px" type="submit" value="Luem Energy"></td>
-		</form>
-		<form action="shop/index.php">
-			<td>
-				<input style="width:167;height:32px" type="submit" value="Online-Shop"></td>
-		</form>
-	</tr>
-	<tr>
-	<form action="MS-index.php">
-		<td>
-			<input style="width:167;height:32px" type="submit" value="MineAPP"></td>
-	</form>
 	<form action="help.php">
 		<td>
-			<input style="width:167;height:32px" type="submit" value="Regelwerk"></td>
+			<input style="width:167;height:32px" type="submit" value="<?php echo $button7; ?>"></td>
+	</form>
+	<form action="index.php">
+		<td>
+			<input style="width:167;height:32px" type="submit" value="<?php echo $button8; ?>"></td>
 	</form>
 	</tr>
-	<tr>
-	<form action="Dynmap.php">
-		<td>
-			<input style="width:167;height:32px" type="submit" value="DynMap"></td>
-	</form>
-	<form action="stats.php">
-		<td>
-			<input style="width:167;height:32px" type="submit" value="Statistik"></td>
-	</form>
-</tr>
+
 	<tr>
 	<form action="settings.php">
 		<td>
-			<input style="width:167;height:32px" type="submit" value="Einstellungen"></td>
+			<input style="width:167;height:32px" type="submit" value="<?php echo $button9; ?>"></td>
 	</form>
 	<form action="job/index.php">
 		<td>
-			<input style="width:167;height:32px" type="submit" value="Lohn Büro"></td>
+			<input style="width:167;height:32px" type="submit" value="<?php echo $button10; ?>"></td>
 	</form>
-</tr>
+	</tr>
+	
 	<tr>
 	<form action="Casino.php">
 		<td>
-			<input style="width:167;height:32px" type="submit" value="Casino"></td>
-	</form>
-	<form action="gewerbe/index.php">
-		<td>
-			<input style="width:167;height:32px" type="submit" value="Gewerbe"></td>
-	</form>
-</tr>
-	<tr>
-	<form action="index.php">
-		<td>
-			<input style="width:167;height:32px" type="submit" value="AKW Buchwald"></td>
+			<input style="width:167;height:32px" type="submit" value="<?php echo $button11; ?>"></td>
 	</form>
 	<form action="logout.php">
 		<td>
-			<input style="width:167;height:32px" type="submit" value="Ausloggen"></td>
+			<input style="width:167;height:32px" type="submit" value="<?php echo $button12; ?>"></td>
 	</form>
-</tr>
-	<?php if ($dbdata['rechte'] == 1) {
+	</tr>
+	
+<?php if ($dbdata['rechte'] == 1) {
 	echo' 
 	<tr>
-	<form action="staat/index.php">
+	<form action="index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Staatskasse">
+	<input style="width:167;height:32px" type="submit" value="">
 	</td>
 	</form>
 	<form action="buergermeister/index.php">
@@ -250,61 +233,42 @@ echo "<h1>Hauptmenü</h1>";
 	</td>
 	</form> ';
 }
-else {
-}
-?>
-	<?php if ($dbdata['rechte'] == 2) {
+else if ($dbdata['rechte'] == 2) {
 	echo' 
 	<tr>
-	<form action="staat/index.php">
+	<form action="admin/akw.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Staatskasse">
-	</td>
-	</form>
-	<form action="buergermeister/index.php">
-	<td>
-	<input style="width:167;height:32px" type="submit" value="Bürgermeister Menü">
-	</td>
-	</form> ';
-	echo' 
-	<tr>
-	<form action="/notiz/index.php">
-	<td>
-	<input style="width:167;height:32px" type="submit" value="Notiz Block">
+	<input style="width:167;height:32px" type="submit" value="Versorger Menü">
 	</td>
 	</form>
 	<form action="index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="           ">
+	<input style="width:167;height:32px" type="submit" value="">
 	</td>
 	</form> ';
 }
-else {
-}
-?>
-	<?php if ($dbdata['rechte'] == 3) {
+else if ($dbdata['rechte'] == 3) {
 	echo' 
 	<tr>
-	<form action="staat/index.php">
+	<form action="admin/index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Staatskasse">
+	<input style="width:167;height:32px" type="submit" value= "Admin Menü">
 	</td>
 	</form>
 	<form action="buergermeister/index.php">
 	<td>
 	<input style="width:167;height:32px" type="submit" value="Bürgermeister Menü">
 	</td>
-	</form> ';
-	echo' 
+	</form>
 	<tr>
-	<form action="/notiz/index.php">
+	<form action="index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Notiz Block">
+	<input style="width:167;height:32px" type="submit" value="">
 	</td>
 	</form>
-	<form action="/admin/index.php">
+	<form action="index.php">
 	<td>
-	<input style="width:167;height:32px" type="submit" value="Admin Menü">
+	<input style="width:167;height:32px" type="submit" value="">
 	</td>
 	</form> ';
 }
@@ -314,22 +278,20 @@ else {
 	</table>
 <h6>
 <?php
-echo "<center>Panel version: 2.5 | &copy; by Kuxii .</center></br></br>";
+echo "<center>Panel version: 3.0 | &copy; by Kuxii .</center></br></br>";
 ?>
-
-</br></br>
 <?php
-	$myfile = fopen("/var/www/html/daten/log/anews.txt", "r");
+	$myfile = fopen("daten/log/anews.txt", "r");
 	$Text = fgets($myfile);
 ?></br></br></br></br>
-<?php   //USERLOGGED BOX
+<?php 
 if ( $dbdata['box2'] == 1) {
 $userid = $_SESSION['userid'];
 echo "<table border=0 bgcolor='green' >";
-{	//news Ticker
+{	
   echo "<tr>";
-  echo "<td width=10%><font face='Verdana'><font color='#FFFFFF'>News:</td>";
-  echo "<td width=80%><font face='Verdana'><font color='#FFFFFF'><marquee>$Text</marquee></td>";
+  echo "<td width=20%><font face='Verdana'><font color='#FFFFFF'>News:</td>";
+  echo "<td width=120%><font face='Verdana'><font color='#FFFFFF'><marquee>$Text</marquee></td>";
   echo "</tr>";
 }echo "</table>";
 }
@@ -339,6 +301,5 @@ echo "";
 echo "<h1></h1>";
 }
 ?>
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </body> 
 </html>

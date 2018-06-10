@@ -1,29 +1,17 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-
-//		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -35,7 +23,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -123,10 +111,10 @@ Konto von: <?php echo " $_name1 ";?> :: <?php echo " $_uuid1 ";
 </tr>
 </br></br>
 <tr>
-	<td bgcolor=#BDBDBD><?php include("/var/www/html/daten/bank/$_name1/$_name1-$_uuid1-date.html");?></td>
-	<td bgcolor=#A4A4A4><?php include("/var/www/html/daten/bank/$_name1/$_name1-$_uuid1-vz.html");?></td>
-	<td bgcolor=#BDBDBD><?php include("/var/www/html/daten/bank/$_name1/$_name1-$_uuid1-out.html");?></td>
-	<td bgcolor=#A4A4A4><?php include("/var/www/html/daten/bank/$_name1/$_name1-$_uuid1-in.html");?></td>
+	<td bgcolor=#BDBDBD><?php include("../cache/$username/bank/$_name1-$_uuid1-date.html");?></td>
+	<td bgcolor=#A4A4A4><?php include("../cache/$username/bank/$_name1-$_uuid1-vz.html");?></td>
+	<td bgcolor=#BDBDBD><?php include("../cache/$username/bank/$_name1-$_uuid1-out.html");?></td>
+	<td bgcolor=#A4A4A4><?php include("../cache/$username/bank/$_name1-$_uuid1-in.html");?></td>
 </tr>
 <tr>
 	<td bgcolor=#FA5858>&nbsp; </td>
@@ -145,4 +133,4 @@ Konto von: <?php echo " $_name1 ";?> :: <?php echo " $_uuid1 ";
 	<input style="width:150;height:32px" type="submit" value="Zur&uuml;ck"></td>
 </form>
 </head> 
-<body> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<body>

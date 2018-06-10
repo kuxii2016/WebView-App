@@ -1,29 +1,17 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-
-//		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -35,7 +23,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -76,27 +64,27 @@ if ($username !== false && $theme == 1) {
 ?>
 <?php
 
-	unlink("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html");
-	unlink("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html");
-	unlink("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html");
-	unlink("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html");
+	unlink("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html");
+	unlink("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html");
+	unlink("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html");
+	unlink("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html");
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "w");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "w");
 	$txt = "";
 	fwrite ($myfile, $datum);
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "w");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "w");
 	$txt = "";
 	fwrite ($myfile, $txt);
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "w");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "w");
 	$txt = "";
 	fwrite ($myfile, $txt);
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "w");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "w");
 	$txt = "";
 	fwrite ($myfile, "");
 	fclose($myfile);

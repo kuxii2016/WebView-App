@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('../config/rcon.php');
+require '../config/config.php';
+require '../config/Multiplikator.php';
+require '../config/IDs.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -38,7 +38,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -88,7 +88,7 @@ if ($username !== false && $theme == 1) {
 	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 	<meta name="author" content="Michael Kux">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Lohn Zahlungen</title> 
+	<title>EE :: Lohn Zahlungen</title> 
 </head> 
 <body> 
 	<h1>Lohn Zahlungen</h1>
@@ -111,53 +111,53 @@ if ($username !== false && $theme == 1) {
 	$rcon->sendCommand("tell $suser Lohn vom Staat: $stdlohn €.Ihre Haze Maze Bank.!");
 	if(isset($_POST['kaufen']))
 	{
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "a");
 	fwrite ($myfile,  $stdlohn. " € - </br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "a");
 	fwrite ($myfile,"Lohn Zahlung: $suser </br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 	//Staats Guthaben
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
 	$sbetrag = fgets($myfile);
 	//Zahlung an Staatskasse
 	$nsbetrag = $sbetrag - $stdlohn;
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "w");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "w");
 	fwrite ($myfile, $nsbetrag);
 	fclose($myfile);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$suser/$suser-$uid-date.html", "a");
+	$myfile = fopen("../cache/$suser/bank/$suser-$uid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$suser/$suser-$uid-in.html", "a");
+	$myfile = fopen("../cache/$suser/bank/$suser-$uid-in.html", "a");
 	fwrite ($myfile, $stdlohn. " € + </br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$suser/$suser-$uid-vz.html", "a");
+	$myfile = fopen("../cache/$suser/bank/$suser-$uid-vz.html", "a");
 	fwrite ($myfile, "Lohn vom Staat</br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$suser/$suser-$uid-out.html", "a");
+	$myfile = fopen("../cache/$suser/bank/$suser-$uid-out.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 	//GS Admin Debug
-	$myfile = fopen("/var/www/html/daten/log/spieler/$suser-log.html", "a");
+	$myfile = fopen("../cache/log/player/$suser-log.html", "a");
 	fwrite ($myfile, "Spieler: $suser Bekam Lohn $stdlohn €(WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m/H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/log/spieler/$suser-date.html", "a");
+	$myfile = fopen("../cache/log/player/$suser-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 	}
@@ -182,14 +182,14 @@ else
  </br> </br>
  Es wurden <?php echo " $lklase". " €"; ?> an <?php echo " $suser". " ausbezahlt"; ?>
  </br></br>
- Davon <?php echo "$gst". " €";?>Steuern
+ Davon <?php echo "$gst". " € ";?>Steuern
   </br> </br>
 <table>
 	<tr>
 		<td>
 			<input style="width:150;height:32px" type="submit" value="Bezahlen" name="kaufen" /></td>
 			</form>
-		<form action='index.php'>
+		<form action='../buergermeister/index.php'>
 	<td>
 		<input style="width:150;height:32px" type="submit" value="Zurück" ></td>
 		</form>
@@ -197,4 +197,3 @@ else
 </table>
 </body> 
 </html>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

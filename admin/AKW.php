@@ -1,29 +1,17 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-
-//		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -35,7 +23,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -93,17 +81,12 @@ if ($username !== false && $theme == 1) {
     <th><font color="white">Ereigniss</th>
   </tr>
   <tr>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/auftrag/aktuell-date.html");?></td>
-    <td><font color="orange"><center><?php include("/var/www/html/daten/emeter/auftrag/aktuell-log.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/akw/auftrag/aktuell-date.html");?></td>
+    <td><font color="orange"><center><?php include("../cache/akw/auftrag/aktuell-log.html");?></td> 
   </tr>
 </table>
-	
-	
-	
-	
-
 <?php
-	$myfile = fopen("/var/www/html/daten/bank/Akw/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64.txt", "r");
+	$myfile = fopen("../cache/akw/bank/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64.txt", "r");
 	$sbetrag = fgets($myfile);
 ?>	
 <h2>Konto Übersicht</h2>
@@ -116,10 +99,10 @@ if ($username !== false && $theme == 1) {
 	</tr>
 </br></br>
 	<tr>
-		<td bgcolor=#F3F781><center> <?php include("/var/www/html/daten/bank/Akw/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-date.html");?></td>
-		<td bgcolor=#F3F781> <?php include("/var/www/html/daten/bank/Akw/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-vz.html");?></td>
-		<td bgcolor=#F3F781><center> <?php include("/var/www/html/daten/bank/Akw/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-out.html");?></td>
-		<td bgcolor=#F3F781><center> <?php include("/var/www/html/daten/bank/Akw/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-in.html");?></td>
+		<td bgcolor=#F3F781><center> <?php include("../cache/akw/bank/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-date.html");?></td>
+		<td bgcolor=#F3F781> 		 <?php include("../cache/akw/bank/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-vz.html");?></td>
+		<td bgcolor=#F3F781><center> <?php include("../cache/akw/bank/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-out.html");?></td>
+		<td bgcolor=#F3F781><center> <?php include("../cache/akw/bank/Akw-9e95b13e-4ab9-40a7-8cfe-9eed07f80d64-in.html");?></td>
 	</tr>
 	<tr>
 		<td bgcolor=#088A85>&nbsp; </td>

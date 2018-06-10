@@ -1,11 +1,9 @@
 <?php
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('../config/rcon.php');
+require '../config/config.php';
+require '../config/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
@@ -25,7 +23,13 @@ $theme = $dbdata['theme'];
 $rechte = $dbdata['rechte'];
 //---Spieler-Box
 $rechte = $dbdata['box1'];
-
+//---Sprechfile
+if($dbdata['sprache'] == 1){
+require '../conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require '../conversation/2.php';
+}
 //		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
@@ -38,7 +42,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -93,50 +97,50 @@ if ($username !== false && $theme == 1) {
 	{
 	$rcon->sendCommand("wallet $username remove $summe");
 	$rcon->sendCommand("wallet $sn add $summe");
-	$rcon->sendCommand("tell $sn $username Überwieß $summe €.Ihre Haze Maze Bank.!");
+	$rcon->sendCommand("tell $sn $username Überwieß $summe  $GuthabenIcon.Ihre Haze Maze Bank.!");
 	if(isset($_POST['kaufen']))
 	{
 	//Read Funktion.
-	$myfilec = fopen("/var/www/html/daten/bank/admin/$uuid-$username-$sn.txt", "w");
+	$myfilec = fopen("../cache/bank/$uuid-$username-$sn.txt", "w");
 	fwrite ($myfilec,"Von: " .$username. " | VZ: " .$vz ." | Betrag: " .$summe. " - EUR |-| To: ". $sn. " | VZ: " .$vz ." | Betrag: " .$summe. " + EUR");
 	fclose($myfilec);
     //Aktuelle Zeiterfassung
 	$timestamp = time();
-	$datum = date("d.m.Y/H:i", $timestamp);
+	$datum = date("d.m.y-H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
-	fwrite ($myfile, $summe. " &euro; </br>");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-out.html", "a");
+	fwrite ($myfile, $summe. " $GuthabenIcon </br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-vz.html", "a");
 	fwrite ($myfile,"=> " .$sn. " | " .$vz ."</br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-in.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 	
 	//To Player Konto Auszug
 	$timestamp = time();
-	$datum = date("d.m.Y/H:i", $timestamp);
+	$datum = date("d.m.y-H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfilea = fopen("/var/www/html/daten/bank/$sn/$sn-$uuids-date.html", "a");
+	$myfilea = fopen("../cache/$sn/bank/$sn-$uuids-date.html", "a");
 	fwrite ($myfilea, $datum. "</br>");
 	fclose($myfilea);
 	//schreibt die betrag ins Doc.
-	$myfilea = fopen("/var/www/html/daten/bank/$sn/$sn-$uuids-in.html", "a");
-	fwrite ($myfilea, $summe. " € </br>");
+	$myfilea = fopen("../cache/$sn/bank/$sn-$uuids-in.html", "a");
+	fwrite ($myfilea, $summe. " $GuthabenIcon </br>");
 	fclose($myfilea);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfilea = fopen("/var/www/html/daten/bank/$sn/$sn-$uuids-vz.html", "a");
+	$myfilea = fopen("../cache/$sn/bank/$sn-$uuids-vz.html", "a");
 	fwrite ($myfilea, $username. " <= | " .$vz ."</br>");
 	fclose($myfilea);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfilea = fopen("/var/www/html/daten/bank/$sn/$sn-$uuids-out.html", "a");
+	$myfilea = fopen("../cache/$sn/bank/$sn-$uuids-out.html", "a");
 	fwrite ($myfilea, "&nbsp;" ."</br>"); 
 	fclose($myfilea);
 
@@ -156,14 +160,14 @@ if ($username !== false && $theme == 1) {
 	$result = $statement->execute(array("UPDATE `users` SET `geld` = '$pIIakt' WHERE name = '$sn' "));
 	
 	//Letzten Namen
-	$myfile = fopen("/var/www/html/daten/useruw/$username-$uuid-name.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-name.html", "a");
 	fwrite ($myfile, $sn. "</br>");
 	fclose($myfile);
 	//Letzten Ibans
-	$myfile = fopen("/var/www/html/daten/useruw/$username-$uuid-uuid.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-uuid.html", "a");
 	fwrite ($myfile, $uuids. "</br>");
 	fclose($myfile);
-	$myfile = fopen("/var/www/html/daten/useruw/admin/$uuid-$username.txt", "w");
+	$myfile = fopen("../cache/$username/bank/$uuid-$username.txt", "w");
 	fwrite ($myfile, "$uuid-$username-$sn");
 	fclose($myfile);
 	
@@ -179,76 +183,75 @@ if ($username !== false && $theme == 1) {
 <!doctype html> 
 <html> 
 <head>
-	<meta charset="utf-8"> 
-	<meta name="description" content="Nuclear Gaming Panel">
-	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
-	<meta name="author" content="Michael Kux">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Überweissungen</title> 
+		<meta charset="utf-8"> 
+		<meta name="description" content="Economy Expansion">
+		<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Economy Expansion, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
+		<meta name="author" content="Michael Kux">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>EE :: <?php echo $playertransfer; ?></title>
 </head> 
 <center>
 <body> 
-	<h1>Spieler zu Spieler Überweisung</h1> 
+	<h1><?php echo $playertransfer; ?></h1> 
 <table>
 	<tr>
 		<form  method="POST">
-			<input type="fiel1" 	name="sn[]"	value="Spieler Name">
+			<input type="fiel1" 	name="sn[]"	value="<?php echo $player; ?>">
 			<input type="fiel2" 	name="uuid[]"	value="IBAN"><br><br>
-			<input type="field3" 	name="vz[]"	value="Verwendungszweck">
+			<input type="field3" 	name="vz[]"	value="<?php echo $commit; ?>">
 			<input type="field4" 	name="summe[]"	value="Summe"><br><br>
 	<td>
 </table>			
 <?php 
-	$myfile = fopen("/var/www/html/daten/useruw/admin/$uuid-$username.txt", "r");
+	$myfile = fopen("../cache/$username/bank/$uuid-$username.txt", "r");
 	$ticketID = fgets($myfile);
 	echo "</br>Letzte Ticket-ID:</br>";
 	echo"Ticket-ID: $ticketID</br>";
 	?>
 </br>
-Letzten Überweissungen
+<?php echo $lasttransfer; ?>
 <table border=0 bgcolor=#FA5858>
 <tr>
-	<th bgcolor=#FA5858> Spieler</th>
+	<th bgcolor=#FA5858> <?php echo $player; ?></th>
 	<th bgcolor=#FA5858> IBAN</th>
 
 </tr>
 </br></br>
 <tr>
-	<td bgcolor=#BDBDBD><?php include("/var/www/html/daten/useruw/$username-$uuid-name.html");?></td>
-	<td bgcolor=#A4A4A4><?php include("/var/www/html/daten/useruw/$username-$uuid-uuid.html");?></td>
+	<td bgcolor=#BDBDBD><?php include("../cache/$username/bank/$username-$uuid-name.html");?></td>
+	<td bgcolor=#A4A4A4><?php include("../cache/$username/bank/$username-$uuid-uuid.html");?></td>
 </tr>
 
 </table>
 </br>
-Öffentliche Kassen
+<?php echo $kassen; ?>
 <table border=0 bgcolor=#FA5858>
 <tr>
-	<th bgcolor=#FA5858> Spieler</th>
+	<th bgcolor=#FA5858> <?php echo $player; ?></th>
 	<th bgcolor=#FA5858> IBAN</th>
 </tr>
 </br></br>
 <tr>
-	<td bgcolor=#BDBDBD><?php include("/var/www/html/daten/useruw/oe-name.html");?></td>
-	<td bgcolor=#A4A4A4><?php include("/var/www/html/daten/useruw/oe-uuid.html");?></td>
+	<td bgcolor=#BDBDBD><?php include("../cache/bank/oe-name.html");?></td>
+	<td bgcolor=#A4A4A4><?php include("../cache/bank/oe-uuid.html");?></td>
 </tr>
 </table>
-</br></br></br></br></br></br></br></br></br></br></br>
+</br></br></br></br></br>
 <table>
 <tr>
 <td>
-<input type="submit" value="Los" name="kaufen" style="color:white; background-color:red; width:90;height:32px"></td>
+<input type="submit" value="<?php echo $maketransfer; ?>" name="kaufen" style="color:white; background-color:red; width:90;height:32px"></td>
 </form><td>
-	<form action="index.php">
+	<form action="../index.php">
 		<td>
-			<input style="width:90;height:32px" type="submit" value="Zurück"></td>
+			<input style="width:90;height:32px" type="submit" value="<?php echo $PageIndex; ?>"></td>
 		</form><td>
 	<form action="uleer.php">
 		<td>
-			<input style="width:90;height:32px" type="submit" value="Bereinigen"></td>
+			<input style="width:90;height:32px" type="submit" value="<?php echo $deleteview; ?>"></td>
 		</form>
 	</tr>
 </table>
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </body> 
 </html>
 

@@ -19,31 +19,26 @@ function search($array, $key, $value)
     return $results;
 }
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('../config/rcon.php');
+require '../config/config.php';
+require '../config/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-//		LOGIN Prüfung
+if($dbdata['sprache'] == 1){
+require '../conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require '../conversation/2.php';
+}
 function random_string()
 {
     if (function_exists('random_bytes')) {
@@ -56,7 +51,7 @@ function random_string()
         $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
         $str = bin2hex($bytes);
     } else {
-        $str = md5(uniqid('zuj54w9f65w9<-----EDIT xD', true));
+        $str = md5(uniqid('$mcrypt_salt', true));
     }
     return $str;
 }
@@ -82,7 +77,7 @@ if (!isset($_SESSION['userid'])) {
 }
 ?>
 <?php
-$directoryPath = "/var/www/html/daten/plots/$username"; 
+$directoryPath = "../cache/$username/plot"; 
 if (!file_exists($directoryPath)) {
     mkdir($directoryPath, 0777);
 }
@@ -90,15 +85,14 @@ if (!file_exists($directoryPath)) {
 <!doctype html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="description" content="Nuclear Gaming Panel">
-    <meta name="keywords"
-          content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
-    <meta name="author" content="Michael Kux">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NG :: Grundstücke</title>
+		<meta charset="utf-8"> 
+		<meta name="description" content="Economy Expansion">
+		<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Economy Expansion, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
+		<meta name="author" content="Michael Kux">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EE :: <?php echo $Plotsname;?></title>
 </head>
-<?php //Menü Theme
+<?php
 if ($username !== false && $theme == 1) {
     echo "<body style='background-color:#151515'><font color='#01DF01'>";
 } elseif ($username !== false && $theme == 2) {
@@ -114,7 +108,7 @@ if ($username !== false && $theme == 1) {
 }
 ?><center>
 <h1>Grundstücke</h1>
-<?php // Array Such Funktion
+<?php 
 class arraylib
 {
     static public function array_search($array, $search)
@@ -145,52 +139,46 @@ $id_count = count(search($data, "fe.internal.plot.owner", "$uuid"));
 ?>
 <?php
 	$TimeStand = 3600;
-	$myfile = fopen("/var/www/html/daten/plots/admin/$username.txt", "w");
+	$myfile = fopen("../cache/$username/plot/$username.txt", "w");
 	fwrite ($myfile, "Im Besitz: ".$id_count. " / 25");
 	fclose($myfile);
-	//Aktuelle Spielzeit Holen
+	$myfile = fopen("../cache/plot/$username.txt", "w");
+	fwrite ($myfile, "Im Besitz: ".$id_count. " / 25");
+	fclose($myfile);
 	$datawallet = "$pinfo/$uuid.json";
     $jsondata = file_get_contents($datawallet);
 	$data = json_decode($jsondata,true);
 	$namen = $data;
 	$tdata = floor($namen['timePlayed']/1000);
 	$secs = $tdata;	
-	//KostenPunkt pro Min
 	$NewData = $id_count / 100 * $GSt;
-	$NewData2 = round($NewData * $TimeStand /60);	
-	//Spielzeit seid der letzten Auszahlung
-	$myfile = fopen("/var/www/html/daten/plots/$username/$username-$uuid.Time.txt", "r");
+	$NewData2 = round($NewData * $TimeStand /60);
+	$myfile = fopen("../cache/$username/plot/$username-$uuid.Time.txt", "r");
 	$alttime = fgets ($myfile);
 	$newtime = $tdata-$alttime;
 	$newtimeM = round($newtime/60);
-	//berechnung des Satzes
 	$betrag1 = round($newtime*$sozigeld, 0);
 	$sbetrag = round($betrag1/100*$SoSt);
 	$betrag = $betrag1 - $sbetrag;
-
-	//Grundstückspreis
 	$GrundstWert = $id_count / 100 * $GSt;
 	$GrundstWert2 = round($GrundstWert * $newtime / 60);
 	$vZ = $GrundstWert2 * $vZsatz;
 	$vA = $vZ - $GrundstWert2;
 	$GnPreis = $id_count * $gssteuer ;
 	$gspreis = $newtime * $GnPreis ;
-	$gssteuer = $gspreis; // Zahlbetrag!!!
+	$gssteuer = $gspreis;
 	if ($GrundstWert2 <= 1490){
 		$GrundstWert3 = $GrundstWert2;
 	}
 	else if ($GrundstWert2 >= 1500){
 		$GrundstWert3 = $vZ;
 	}
-	//GS Admin Debug
-	//schreibt den Sünder in den Log.
-	$myfile = fopen("/var/www/html/daten/log/spieler/$username-log.html", "a");
+	$myfile = fopen("../cache/log/player/$username-log.html", "a");
 	fwrite ($myfile, "Spieler: $username Hat Plot Kosten von: $NewData2 € für $id_count / 25 G</br>");
 	fclose($myfile);
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/log/spieler/$username-date.html", "a");
+	$datum = date("d.m.y-H:i", $timestamp);
+	$myfile = fopen("../cache/log/player/$username-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);	
 	if ($GrundstWert2 <= 1490){
@@ -200,19 +188,16 @@ $id_count = count(search($data, "fe.internal.plot.owner", "$uuid"));
 		echo "<font color='red'>Strafe :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ ".$vA." €</font></br>";
 		echo"Zu Bezahlen :<font color='red'> ".$GrundstWert3." €</br>";
 		echo"<h2><font color='red'>Wenn du schon Länger Spielst,</br> Zahle Öfters oder deine Plots werden Entfert.!</h2>";
-	//schreibt den Sünder in den Log.
-	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+	$myfile = fopen("../cache/log/system/system-log.html", "a");
 	fwrite ($myfile, "Spieler: $username überschreitet die Plot Summe mit: $GrundstWert3 € inkl. $vA € Strafe&nbsp;</br>");
 	fclose($myfile);
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+	$datum = date("d.m.y-H:i", $timestamp);
+	$myfile = fopen("../cache/log/system/system-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 	}
-	//Spieler Auszahlung
-	$myfile = fopen("/var/www/html/daten/plots/$username/$username-$uuid.Betrag.txt", "w");
+	$myfile = fopen("..cache/$username/plot/$username-$uuid.Betrag.txt", "w");
 	$txt = "$tdata";
 	fwrite ($myfile, $GrundstWert3);
 	fclose($myfile);
@@ -221,15 +206,15 @@ $id_count = count(search($data, "fe.internal.plot.owner", "$uuid"));
 <center>
 <table style="width:45%" border=0 bgcolor=#2E2E2E  cellspacing=10 cellpadding=>
   <tr>
-    <th><font color="MediumSpringGreen "><div style="text-align:right">Grundstücke</th>
-    <th><font color="MediumSpringGreen "><div style="text-align:left">für <?php echo $username?> </th> 
+    <th><font color="MediumSpringGreen "><div style="text-align:right"><?php echo $Plotsname;?></th>
+    <th><font color="MediumSpringGreen "><div style="text-align:left">-> <?php echo $username?> </th> 
     <th><font color="white"><div style="text-align:right">Stand vom:</th>
 	<th><font color="white"><div style="text-align:left"><?echo $datum;?></th>
   </tr>
   <tr>
-    <th><font color="white">Std</th>
-    <th><font color="white">Plots</th> 
-    <th><font color="white">Steuern</th>
+    <th><font color="white"><?php echo $Factor;?></th>
+    <th><font color="white"><?php echo $Plotsname;?></th> 
+    <th><font color="white"><?php echo $Steuernname;?></th>
 	<th><font color="white"></th>
   </tr>
   
@@ -237,7 +222,7 @@ $id_count = count(search($data, "fe.internal.plot.owner", "$uuid"));
     <td style="width:3%"><font color="white"><center><?php echo round($newtime / 60 / 60, 2)?></td>
 	<td style="width:50%"><font color="white"><center><?php echo $id_count?></td>
     <td style="width:60%"><font color="white"><center><?php echo $GSt?> %</td> 
-    <td style="width:30%"><font color="white"><center><?php echo $GrundstWert2?> €</td> 
+    <td style="width:30%"><font color="white"><center><?php echo $GrundstWert2?> <?php echo $GuthabenIcon;?></td> 
   </tr>
   </tr>
     <td><font color="white"><center></td>
@@ -254,20 +239,20 @@ $id_count = count(search($data, "fe.internal.plot.owner", "$uuid"));
   <tr>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
-    <td><font color="white"><center><div style="text-align:right">inkl. <?php echo $GSt?> % Steuern:</td>
-    <td><font color="orange"><center><?php echo $GrundstWert2 / 100 * $GSt?> €</td> 
+    <td><font color="white"><center><div style="text-align:right">inkl. <?php echo $GSt?> % <?php echo $Steuernname;?>:</td>
+    <td><font color="orange"><center><?php echo $GrundstWert2 / 100 * $GSt?> <?php echo $GuthabenIcon;?></td> 
   </tr>
   <tr>
     <td><font color="white"><center></td>
-	<td><font color="white"><center><?php echo "Im Besitz: ".$id_count. " / 25"?></td> 
+	<td><font color="white"><center><?php echo "$imbesitz: ".$id_count. " / 25"?></td> 
     <td><font color="white"><center></td>
     <td><font color="white"><center>__________________</td> 
   </tr>
   <tr>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
-    <td><font color="white"><center><div style="text-align:right">Zu Bezahlen:</td>
-    <td><font color="green"><center> <?php echo $GrundstWert2?> €</td> 
+    <td><font color="white"><center><div style="text-align:right"><?php echo $zuzahlen;?>:</td>
+    <td><font color="green"><center> <?php echo $GrundstWert2?> <?php echo $GuthabenIcon;?></td> 
   </tr>
 </table>
 </font>
@@ -280,7 +265,7 @@ $id_count = count(search($data, "fe.internal.plot.owner", "$uuid"));
 <table>
     <tr>
         <form action="../index.php">
-            <td><input style="width:180;height:32px" type="submit" value="Hauptmenü"></td>
+            <td><input style="width:180;height:32px" type="submit" value="<?php echo $PageIndex;?>"></td>
         </form></tr></table>
 <?php
 $nowTime = round($newtime / 60 / 60, 2);
@@ -288,7 +273,7 @@ $nowTime = round($newtime / 60 / 60, 2);
 <tr><?php if ($nowTime > 1 && $GrundstWert2 > 9) {
 	echo' <table> <tr>
 		<form action="pay.php" method="POST">
-        <td><input style="width:180;height:32px" type="submit" value="Begleichen" name="Begleichen" /></td>
+        <td><input style="width:180;height:32px" type="submit" value="Begleichen" name="Jetzt" /></td>
         </form>   
 </table></tr> ';
 }
@@ -307,6 +292,4 @@ else {
 }
 ?>
 </body>
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </html>
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>

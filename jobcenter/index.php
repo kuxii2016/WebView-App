@@ -1,33 +1,25 @@
 <?php
 session_start();
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
-require '/var/www/html/data/job.php';
+require '../config/config.php';
+require '../config/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-//---Spieler-job
 $job = $dbdata['job'];
-//		LOGIN Prüfung
+if($dbdata['sprache'] == 1){
+require '../conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require '../conversation/2.php';
+}
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -39,7 +31,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -81,51 +73,46 @@ if ($username !== false && $theme == 1) {
 <!doctype html> 
 <html> 
 <head>
-	<meta charset="utf-8"> 
-	<meta name="description" content="Nuclear Gaming Panel">
-	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
-	<meta name="author" content="Michael Kux">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Job Center</title> 
+  		<meta charset="utf-8"> 
+		<meta name="description" content="Economy Expansion">
+		<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Economy Expansion, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
+		<meta name="author" content="Michael Kux">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>EE :: Job Center</title> 
 </head> 
 <body><center>
 <h1>Job Center</h1> 
 
 
 <?php
-	if ($job <= 1){
-	//Aktuelle Spielzeit Holen
+	if ($job <= 0){
 	$datawallet = "$pinfo/$uuid.json";
     $jsondata = file_get_contents($datawallet);
 	$data = json_decode($jsondata,true);
 	$namen = $data;
 	$tdata = floor($namen['timePlayed']/1000);
 	$secs = $tdata;
-	//Spielzeit seid der letzten Auszahlung
-	$myfile = fopen("/var/www/html/daten/leistungen/$username-$uuid.Time.txt", "r");
+	$myfile = fopen("../cache/$username/sozial/$username-$uuid.Time.txt", "r");
 	$alttime = fgets ($myfile);
 	$newtime = $tdata-$alttime;
-	
-	//berechnung des Satzes
 	$betrag1 = round($newtime*$sozigeld, 0);
 	$sbetrag = round($betrag1/100*$SoSt);
 	$betrag = $betrag1 - $sbetrag;
-	//Übersicht
 	echo "Letzter Stand : " .$alttime. " s.</br>";
 	echo " Neuer Stand  :  " .$tdata. " s. </br></br>";
 	echo " Berechnung  : </br> </br>";
 	echo $tdata. "s. - ".$alttime."s. = ".$newtime."s.</br>";
-	echo $newtime."s. * ".$sozigeld."%. = ".$betrag1."€</br>";
-	echo " Steuern  :  " .round($betrag1). "€ :100 * ".$SoSt." % = ".$sbetrag." €</br>";
+	echo $newtime."s. * ".$sozigeld."%. = ".$betrag1."".$GuthabenIcon. "</br>";
+	echo " Steuern  :  " .round($betrag1)." ".$GuthabenIcon. " :100 * ".$SoSt." % = ".$sbetrag." ".$GuthabenIcon. "</br>";
 	echo "_____________________________</br>";
-	echo "Aktueller Betrag :  + " .$betrag1. "€</br>";
-	echo "$SoSt % Steuern :  - " .$sbetrag. "€</br>";
+	echo "Aktueller Betrag :  + " .$betrag1. "".$GuthabenIcon. "</br>";
+	echo "$SoSt % Steuern :  - " .$sbetrag. "".$GuthabenIcon. "</br>";
 	echo "_____________________________</br>";
-	echo " Anspruch   :  + " .$betrag. "€</br>";
+	echo " Anspruch   :  + " .$betrag. "".$GuthabenIcon. "</br>";
 	if ($betrag <= 1499){
 		$betragH = $betrag;
 		$betragS = $sbetrag;
-		echo" Auszahlung   :  + <font color='green'> ".$betrag." €";
+		echo" Auszahlung   :  + <font color='green'> ".$betrag." ".$GuthabenIcon. "";
 	}
 	else if ($betrag >= 1500){
 		$betragHg = $betrag / 100 * 10 ;
@@ -133,13 +120,12 @@ if ($username !== false && $theme == 1) {
 		$betragS = $sbetrag + $betragHg;
 		echo" Auszahlung   :  + <font color='red'>&nbsp;&nbsp;".$betragH." €</br>";
 		echo "<font color='red'>Meldeversäumniss :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I</font></br>";
-		$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+		$myfile = fopen("../cache/log/player/$username-log.html", "a");
 		fwrite ($myfile, "Spieler: $username Hat eine Sperre von 10% und bekommt nur $betragH €.!</br>");
 		fclose($myfile);
 		$timestamp = time();
-		$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-		$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+		$datum = date("d.m.y-H:i", $timestamp);
+		$myfile = fopen("../cache/log/player/$username-date.html", "a");
 		fwrite ($myfile, $datum. "&nbsp;</br>");
 		fclose($myfile);
 	}
@@ -149,13 +135,12 @@ if ($username !== false && $theme == 1) {
 		$betragS = $sbetrag + $betragHg;
 		echo" Auszahlung   :  + <font color='red'>&nbsp;&nbsp;".$betragH." €</br>";
 		echo "<font color='red'>Meldeversäumniss :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;II</font></br>";
-		$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+		$myfile = fopen("../cache/log/player/$username-log.html", "a");
 		fwrite ($myfile, "Spieler: $username Hat eine Sperre von 30% und bekommt nur $betragH €.!</br>");
 		fclose($myfile);
 		$timestamp = time();
-		$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-		$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+		$datum = date("d.m.y-H:i", $timestamp);
+		$myfile = fopen("../cache/log/player/$username-date.html", "a");
 		fwrite ($myfile, $datum. "&nbsp;</br>");
 		fclose($myfile);
 	}
@@ -165,13 +150,12 @@ if ($username !== false && $theme == 1) {
 		$betragS = $sbetrag + $betragHg;
 		echo" Auszahlung   :  + <font color='red'>&nbsp;&nbsp;".$betragH." €</br>";
 		echo "<font color='red'>Meldeversäumniss :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;III</font></br>";
-		$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+		$myfile = fopen("../cache/log/player/$username-log.html", "a");
 		fwrite ($myfile, "Spieler: $username Hat eine Sperre von 50% und bekommt nur $betragH €.!</br>");
 		fclose($myfile);
 		$timestamp = time();
-		$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-		$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+		$datum = date("d.m.y-H:i", $timestamp);
+		$myfile = fopen("../cache/log/player/$username-date.html", "a");
 		fwrite ($myfile, $datum. "&nbsp;</br>");
 		fclose($myfile);
 	}
@@ -181,23 +165,20 @@ if ($username !== false && $theme == 1) {
 		$betragS = $sbetrag + $betragHg;
 		echo" Auszahlung   :  + <font color='red'>&nbsp;&nbsp;".$betragH." €</br>";
 		echo "<font color='red'>Meldeversäumniss :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IIII</font></br>";
-		$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+		$myfile = fopen("../cache/log/player/$username-log.html", "a");
 		fwrite ($myfile, "Spieler: $username Hat eine Sperre von 100% und bekommt nur $betragH €.!</br>");
 		fclose($myfile);
 		$timestamp = time();
-		$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-		$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+		$datum = date("d.m.y-H:i", $timestamp);
+		$myfile = fopen("../cache/log/player/$username-date.html", "a");
 		fwrite ($myfile, $datum. "&nbsp;</br>");
 		fclose($myfile);
 	}
-	//Spieler Auszahlung
-	$myfile = fopen("/var/www/html/daten/leistungen/$username-$uuid.Betrag.txt", "w");
+	$myfile = fopen("../cache/$username/sozial/$username-$uuid.Betrag.txt", "w");
 	$txt = "$tdata";
 	fwrite ($myfile, $betragH);
 	fclose($myfile);
-	//Steuern Abgabe
-	$myfile = fopen("/var/www/html/daten/leistungen/$username-$uuid.Steuern.txt", "w");
+	$myfile = fopen("../cache/$username/sozial/$username-$uuid.Steuern.txt", "w");
 	fwrite ($myfile, $betragS);
 	fclose($myfile);
 	}
@@ -226,7 +207,7 @@ else {
 	<tr>
 		<form action="../index.php">
 			<td>
-				<input style="width:160;height:32px" type="submit" value="Hauptmenü"></td>
+				<input style="width:160;height:32px" type="submit" value="<?php echo $PageIndex;?>"></td>
 			</form>
 <?php if ($betrag >= 20) {
 	echo'
@@ -242,10 +223,8 @@ else {
 		</tr>
 	</table>
 </br>
-<font color="orange">
-    Meldeversäumniss Stufen:</br>
+<font color="orange"></br>
     | Stufe: I = 10% | Stufe: II = 30% | Stufe: III = 60% | Stufe: IIII = 100%  </br>
 </font>
 </body> 
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </html>

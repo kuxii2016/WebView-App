@@ -1,9 +1,8 @@
 <?php
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('../config/rcon.php');
+require '../config/config.php';
+require '../config/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -64,16 +63,16 @@ if(!isset($_SESSION['userid'])) {
 }
 ?>
 <?php
-	unlink("/var/www/html/daten/useruw/$username-$uuid-name.html");
-	unlink("/var/www/html/daten/useruw/$username-$uuid-uuid.html");
+	unlink("../cache/$username/bank/$username-$uuid-name.html");
+	unlink("../cache/$username/bank/$username-$uuid-uuid.html");
 
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/useruw/$username-$uuid-name.html", "w");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-name.html", "w");
 	$txt = "";
 	fwrite ($myfile, $datum);
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/useruw/$username-$uuid-uuid.html", "w");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-uuid.html", "w");
 	$txt = "";
 	fwrite ($myfile, $txt);
 	fclose($myfile);	

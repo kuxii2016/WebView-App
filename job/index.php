@@ -1,34 +1,25 @@
 <?php
 session_start();
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
-require '/var/www/html/data/job.php';
+require '../config/config.php';
+require '../config/Multiplikator.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-//---Spieler-job
 $job = $dbdata['job'];
-
-//		LOGIN Prüfung
+if($dbdata['sprache'] == 1){
+require '../conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require '../conversation/2.php';
+}
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -40,7 +31,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -93,10 +84,10 @@ if ($username !== false && $theme == 1) {
 	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 	<meta name="author" content="Michael Kux">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Lohn Büro</title> 
+	<title>EE :: <?php echo $lBezeichnung?></title> 
 </head> 
 <body><center>
-<h1>Lohn Büro</h1> 
+<h1><?php echo $lBezeichnung?></h1> 
 
 
 <?php
@@ -170,37 +161,37 @@ if ($username !== false && $theme == 1) {
 
 	//Lohnstufen
 	
-	if ($Tage <= 5){
+	if ($Tage <= $stufe1){
 	$stufe = 0;
 	$stufetxt = 0;
 	}
-	if ($Tage >= 5){
+	if ($Tage >= $stufe2){
 	$stufe = 1;
 	$stufetxt = 1;
 	}
-	if ($Tage >= 10){
+	if ($Tage >= $stufe3){
 	$stufe = 6;
 	$stufetxt = 1;
 	}
-	else if ($Tage >= 20){
+	else if ($Tage >= $stufe4){
 	$stufe = 12;
 	$stufetxt = 2;
 	}
-	else if ($Tage >= 35){
+	else if ($Tage >= $stufe5){
 	$stufe = 18;
 	$stufetxt = 3;
 	}
-	else if ($Tage >= 50){
+	else if ($Tage >= $stufe6){
 	$stufe = 24;
 	$stufetxt = 4;
 	}
 	else{		
 	}
 	//Bonuszahlung Stunden
-	$myfile = fopen("/var/www/html/daten/job/$username/Bonus.txt", "r");
+	$myfile = fopen("../cache/$username/job/Bonus.txt", "r");
 	$Boni = fgets ($myfile);
 	//Bereitsgezahlte Stunden
-	$myfile = fopen("/var/www/html/daten/job/$username/Stunden-bezahlt.txt", "r");
+	$myfile = fopen("../cache/$username/job/Stunden-bezahlt.txt", "r");
 	$bezahltdavon = fgets ($myfile);
 	$anspruchsrechnung = round($secs / 60 / 60 - $bezahltdavon);
 	//Stunden Lohn Rechnung
@@ -218,43 +209,43 @@ if ($username !== false && $theme == 1) {
 	$steuern = round($gHrechnung / 100 * $EinkSt);
 	$steuernFinsch = round($gHrechnung - $steuern + $Boni);
 	//Stundenlohn Chache
-	$myfile = fopen("/var/www/html/daten/job/$username/Stundenlohn.html", "w");
+	$myfile = fopen("../cache/$username/job/Stundenlohn.html", "w");
 	fwrite ($myfile, $StDh. "</br>");
 	fclose($myfile);
 	//Stunden Chache
-	$myfile = fopen("/var/www/html/daten/job/$username/Stunden.html", "w");
+	$myfile = fopen("../cache/$username/job/Stunden.html", "w");
 	fwrite ($myfile, $anspruchsrechnung. "</br>");
 	fclose($myfile);
 	//Lohnstufe Chache
-	$myfile = fopen("/var/www/html/daten/job/$username/Lohnstufe.html", "w");
+	$myfile = fopen("../cache/$username/job/Lohnstufe.html", "w");
 	fwrite ($myfile, $stufetxt ." mit ".$stufe. " % </br>");
 	fclose($myfile);
 	//Lohnstufe Chache
-	$myfile = fopen("/var/www/html/daten/job/$username/Lohnstufe.txt", "w");
+	$myfile = fopen("../cache/$username/job/Lohnstufe.txt", "w");
 	fwrite ($myfile, $stufetxt ." mit ".$stufe. " %");
 	fclose($myfile);
 	//Lohnrechnung Chache	
-	$myfile = fopen("/var/www/html/daten/job/$username/Lohn.html", "w");
+	$myfile = fopen("../cache/$username/job/Lohn.html", "w");
 	fwrite ($myfile, $gHrechnung. " € ");
 	fclose($myfile);
 	//Lohnrechnung Chache	
-	$myfile = fopen("/var/www/html/daten/job/$username/ZahlLohn.html", "w");
+	$myfile = fopen("../cache/$username/job/ZahlLohn.html", "w");
 	fwrite ($myfile, $steuernFinsch. "");
 	fclose($myfile);
 	//Lohnrechnung Chache	
-	$myfile = fopen("/var/www/html/daten/job/$username/Steuern.html", "w");
+	$myfile = fopen("../cache/$username/job/Steuern.html", "w");
 	fwrite ($myfile, $steuern. "");
 	fclose($myfile);
 	//Lohnrechnung Chache	
-	$myfile = fopen("/var/www/html/daten/job/$username/Steuern.txt", "w");
+	$myfile = fopen("../cache/$username/job/Steuern.txt", "w");
 	fwrite ($myfile, $steuern. "");
 	fclose($myfile);
 	//Auszahlbetrag Chache	
-	$myfile = fopen("/var/www/html/daten/job/$username/Auszahlung.txt", "w");
+	$myfile = fopen("../cache/$username/job/Auszahlung.txt", "w");
 	fwrite ($myfile, $steuernFinsch. "");
 	fclose($myfile);
 	//Stunden Chache
-	$myfile = fopen("/var/www/html/daten/job/$username/Stunden.txt", "w");
+	$myfile = fopen("../cache/$username/job/Stunden.txt", "w");
 	fwrite ($myfile, $anspruchsrechnung. "");
 	fclose($myfile);
 	$timestamp = time();
@@ -264,23 +255,23 @@ if ($username !== false && $theme == 1) {
 
 <table style="width:45%" border=0 bgcolor=#2E2E2E  cellspacing=10 cellpadding=>
   <tr>
-    <th><font color="MediumSpringGreen "><div style="text-align:right">Lohnabrechnung</th>
-    <th><font color="MediumSpringGreen "><div style="text-align:left">für <?php echo $username?> als:  <?php echo $jobTitles?></th> 
+    <th><font color="MediumSpringGreen "><div style="text-align:right"><?php echo $lLohnzettel?></th>
+    <th><font color="MediumSpringGreen "><div style="text-align:left"><?php echo $lfür?> <?php echo $username?> <?php echo $las?>:  <?php echo $jobTitles?></th> 
     <th><font color="white"><div style="text-align:right">vom:</th>
 	<th><font color="white"><div style="text-align:left"><?echo $datum;?></th>
   </tr>
   <tr>
-    <th><font color="white">STD</th>
-    <th><font color="white">Lohn Faktor</th> 
-    <th><font color="white">Lohnstufe</th>
+    <th><font color="white"><?php echo $lstd?></th>
+    <th><font color="white"><?php echo $lfactor?></th> 
+    <th><font color="white"><?php echo $lstufe?></th>
 	<th><font color="white"></th>
   </tr>
   
   <tr>
-    <td style="width:3%"><font color="white"><center><?php include("/var/www/html/daten/job/$username/Stunden.html");?></td>
-	<td style="width:50%"><font color="white"><center><?php include("/var/www/html/daten/job/$username/Stundenlohn.html");?></td>
-    <td style="width:60%"><font color="white"><center><?php include("/var/www/html/daten/job/$username/Lohnstufe.html");?> </td> 
-    <td style="width:30%"><font color="white"><center><?php include("/var/www/html/daten/job/$username/Lohn.html");?></td> 
+    <td style="width:3%"><font color="white"><center><?php include("../cache/$username/job/Stunden.html");?></td>
+	<td style="width:50%"><font color="white"><center><?php include("../cache/$username/job/Stundenlohn.html");?></td>
+    <td style="width:60%"><font color="white"><center><?php include("../cache/$username/job/Lohnstufe.html");?> </td> 
+    <td style="width:30%"><font color="white"><center><?php include("../cache/$username/job/Lohn.html");?></td> 
   </tr>
   </tr>
     <td><font color="white"><center></td>
@@ -291,14 +282,14 @@ if ($username !== false && $theme == 1) {
   <tr> 
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
-    <td><font color="white"><center><div style="text-align:right">Bonus:</td>
-    <td><font color="red"><center> <?php include("/var/www/html/daten/job/$username/Bonus.html");?></td> 
+    <td><font color="white"><center><div style="text-align:right"><?php echo $lbonus?>:</td>
+    <td><font color="red"><center> <?php include("../cache/$username/job/Bonus.html");?></td> 
   </tr>
   <tr>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
-    <td><font color="white"><center><div style="text-align:right"><?php echo $EinkSt?> % Steuern:</td>
-    <td><font color="orange"><center>- <?php include("/var/www/html/daten/job/$username/Steuern.html");?> &euro;</td> 
+    <td><font color="white"><center><div style="text-align:right"><?php echo $EinkSt?> % <?php echo $Steuernname?>:</td>
+    <td><font color="orange"><center>- <?php include("../cache/$username/job/Steuern.html");?> <?php echo $GuthabenIcon?></td> 
   </tr>
   <tr>
     <td><font color="white"><center></td>
@@ -309,8 +300,8 @@ if ($username !== false && $theme == 1) {
   <tr>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
-    <td><font color="white"><center><div style="text-align:right">Aktuelle Auszahlung:</td>
-    <td><font color="green"><center> <?php include("/var/www/html/daten/job/$username/ZahlLohn.html");?> &euro;</td> 
+    <td><font color="white"><center><div style="text-align:right"><?php echo $lauszahlung?>:</td>
+    <td><font color="green"><center> <?php include("../cache/$username/job/ZahlLohn.html");?> <?php echo $GuthabenIcon?></td> 
   </tr>
 </table>
 </font>
@@ -336,22 +327,25 @@ else {
 	<tr>
 		<form action="../index.php">
 			<td>
-				<input style="width:160;height:32px" type="submit" value="Hauptmenü"></td>
+				<input style="width:160;height:32px" type="submit" value="<?php echo $PageIndex?>"></td>
 			</form>
-<?php if ($steuernFinsch >= 20 && $job >= 1 ) {
+<?php if ($steuernFinsch >= 20 && $job >= 1 && $secs >= $minPlayTimeForTheJob) {
 	echo'
 		<form action="pay.php" method="POST">
 	<td>
-		<input style="width:160;height:32px" type="submit" value="Auszahlen" name="Auszahlen" />
+		<input style="width:160;height:32px" type="submit" value="Auszahlen" name="<?php echo $pay?>" />
 		</td>
 	</form> ';
 }
 else {
 }
 ?>
+<?php
+if($secs <= $minPlayTimeForTheJob)
+	echo "<font color='red'>" .$sorry. "<br><br>"; 
+?>
 		</tr>
 	</table>
 </br>
-</br></br></br></br></br></br></br></br></br></br></br></br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body> 
 </html>

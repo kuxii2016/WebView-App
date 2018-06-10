@@ -1,8 +1,7 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
@@ -22,7 +21,13 @@ $theme = $dbdata['theme'];
 $rechte = $dbdata['rechte'];
 //---Spieler-Box
 $rechte = $dbdata['box1'];
-
+//---Sprechfile
+if($dbdata['sprache'] == 1){
+require '../conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require '../conversation/2.php';
+}
 //		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
@@ -35,7 +40,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -60,10 +65,10 @@ if(!isset($_SESSION['userid'])) {
  die('Bitte zuerst <a href="login.php">Einloggen</a>');
 }
 ?>
-<?php //User Ordner Create
-$directoryPath = "/var/www/html/daten/bank/$username"; 
-if (!file_exists($directoryPath)) {
-    mkdir($directoryPath, 0777);
+<?php //User Ordner Createcache/$username"
+$directoryPath = "cache/$username/bank"; 
+if (!file_exists("cache/$username/bank")) {
+    mkdir("cache/$username/bank", 0777);
 }
 ?>
 <?php 	//Menü Theme
@@ -91,63 +96,62 @@ if ($username !== false && $theme == 1) {
 <html> 
 	<head>
 		<meta charset="utf-8"> 
-		<meta name="description" content="Nuclear Gaming Panel">
-		<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
+		<meta name="description" content="Economy Expansion">
+		<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Economy Expansion, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 		<meta name="author" content="Michael Kux">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>NG :: Kontomanager</title> 
+		<title>EE :: <?php echo $button1; ?></title> 
 	</head> 
 <body> 
-	<h1>Mine Bank</h1> 
-<table border=0 bgcolor=#04B45F style="width:99%">	
-	<table border=0 bgcolor=#04B45F style="width:99%">
-<tr>
-	<th bgcolor=#04B45F style="width:8%"> Datum  </th>
-	<th bgcolor=#04B45F style="width:75%"> Verwendungszweck  </th>
-	<th bgcolor=#04B45F style="width:9%"> Ausgaben  </th>
-	<th bgcolor=#04B45F style="width:20%"> Einnahmen  </th>
-</tr>
-</br></br>
-<tr>
-	<td bgcolor=#BDBDBD><center><?php include("/var/www/html/daten/bank/$username/$username-$uuid-date.html");?></td>
-	<td bgcolor=#A4A4A4><div style='width:300px; overflow:scroll'>		<?php include("/var/www/html/daten/bank/$username/$username-$uuid-vz.html");?></td>
-	<td bgcolor=#BDBDBD><center><?php include("/var/www/html/daten/bank/$username/$username-$uuid-out.html");?></td>
-	<td bgcolor=#A4A4A4><center><?php include("/var/www/html/daten/bank/$username/$username-$uuid-in.html");?></td>
-</tr>
-<tr>
-	<td bgcolor=#04B45F>&nbsp; </td>
-	<td bgcolor=#04B45F>&nbsp; </td>
-	<td bgcolor=#04B45F>Guthaben: </td>
-	<td bgcolor=#A4A4A4><?php echo"&nbsp;".$dbdata['geld']. " €";?> </td>
-</tr>
-
-<tr >
-	<th bgcolor=#04B45F>IBAN:</th>
-	<th bgcolor=#04B45F><?php echo "$uuid"?></th>
-</tr>
-</table>
+	<h1><?php echo $button1; ?></h1> 
+		<table border=0 bgcolor=#04B45F style="width:99%">	
+			<table border=0 bgcolor=#04B45F style="width:99%">
+		<tr>
+			<th bgcolor=#04B45F style="width:8%"> <?php echo $date; ?>  </th>
+			<th bgcolor=#04B45F style="width:75%"> <?php echo $commit; ?>  </th>
+			<th bgcolor=#04B45F style="width:9%"> <?php echo $moneyout; ?>  </th>
+			<th bgcolor=#04B45F style="width:20%"> <?php echo $moneyin; ?>  </th>
+		</tr>
+	</br>
+</br>
+	<tr>
+		<td bgcolor=#BDBDBD><center><?php include("../cache/$username/bank/$username-$uuid-date.html");?></td>
+		<td bgcolor=#A4A4A4><center><?php include("../cache/$username/bank/$username-$uuid-vz.html");?></td>
+		<td bgcolor=#BDBDBD><center><?php include("../cache/$username/bank/$username-$uuid-out.html");?></td>
+		<td bgcolor=#A4A4A4><center><?php include("../cache/$username/bank/$username-$uuid-in.html");?></td>
+	</tr>
+		<tr>
+			<td bgcolor=#04B45F>&nbsp; </td>
+			<td bgcolor=#04B45F>&nbsp; </td>
+			<td bgcolor=#04B45F><?php echo $moneyhave; ?>: </td>
+			<td bgcolor=#A4A4A4><?php echo"&nbsp;".$dbdata['geld']. "";?><?php echo $GuthabenIcon; ?> </td>
+		</tr>
+		<tr >
+			<th bgcolor=#04B45F>IBAN:</th>
+			<th bgcolor=#04B45F><?php echo "$uuid"?></th>
+		</tr>
+	</table>
 </table>
 	<table border=0 >
 		<tr>
-		<td ><form action='leer.php' method='POST'><input style="width:280px;height:30px" type="submit" value="Konto Auszug Löschen" name="Löschen" /></form></td>
+		<td ><form action='leer.php' method='POST'><input style="width:340px;height:30px" type="submit" value="<?php echo $deleteview; ?>" name="Löschen" /></form></td>
 		</tr>
 	</table>
 <table>
 	<tr>
 		<form action="../index.php">
 			<td>
-			<input style="width:90;height:32px" type="submit" value="Hauptmenü"></td>
+			<input style="width:110;height:32px" type="submit" value="<?php echo $PageIndex; ?>"></td>
 		</form>
 		<form action="ueberweisung.php">
 	<td>
-		<input style="width:90;height:32px" type="submit" value="Überweisung"></td>
+		<input style="width:110;height:32px" type="submit" value="<?php echo $transfer; ?>"></td>
 			</form>
 		<form action="wechsel.php">
 	<td>
-		<input style="width:90;height:32px" type="submit" value="Geldwechsel"></td>
+		<input style="width:110;height:32px" type="submit" value="<?php echo $moneyswitch; ?>"></td>
 		</form>
 	</tr>
 </table>
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 </body> 
 </html>

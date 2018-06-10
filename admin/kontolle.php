@@ -1,38 +1,22 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require '../config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-//---Spieler-Box
 $rechte = $dbdata['box2'];
-//---Spieler-Emeter Zähler 1
 $ZiD = $dbdata['zID'];
-//---Spieler-Emeter Zähler 2
 $ZiD1 = $dbdata['zID1'];
-//---Spieler-Emeter Zähler 3
 $ZiD2 = $dbdata['zID2'];
-//---Spieler-Emeter Zähler 4
 $ZiD3 = $dbdata['zID3'];
-//		LOGIN Prüfung
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -44,7 +28,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -119,39 +103,39 @@ SpielerName:<br>
   
   <tr>
 	<td style="width:2%"><font color="white"><center>1</td>
-    <td style="width:3%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/1-ID.html");?></td>
-    <td style="width:4%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/1-euamount.html");?></td> 
-    <td style="width:3%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/1-preis.html");?></td>
-	<td style="width:50%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/1-timeSincerunSec.html");?></td>
-    <td style="width:60%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/1-euconsumedkilo.html");?></td> 
-    <td style="width:30%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/1-cost.html");?></td> 
+    <td style="width:3%"><font color="white"><center><?php include("../cache/$name/energy/1-ID.html");?></td>
+    <td style="width:4%"><font color="white"><center><?php include("../cache/$name/energy/1-euamount.html");?></td> 
+    <td style="width:3%"><font color="white"><center><?php include("../cache/$name/energy/1-preis.html");?></td>
+	<td style="width:50%"><font color="white"><center><?php include("../cache/$name/energy/1-timeSincerunSec.html");?></td>
+    <td style="width:60%"><font color="white"><center><?php include("../cache/$name/energy/1-euconsumedkilo.html");?></td> 
+    <td style="width:30%"><font color="white"><center><?php include("../cache/$name/energy/1-cost.html");?></td> 
   </tr>
     <tr>
 	<td style="width:2%"><font color="white"><center>2</td>
-    <td style="width:3%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/2-ID.html");?></td>
-    <td style="width:4%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/2-euamount.html");?></td> 
-    <td style="width:3%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/2-preis.html");?></td>
-	<td style="width:50%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/2-timeSincerunSec.html");?></td>
-    <td style="width:60%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/2-euconsumedkilo.html");?></td> 
-    <td style="width:30%"><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/2-cost.html");?></td> 
+    <td style="width:3%"><font color="white"><center><?php include("../cache/$name/energy/2-ID.html");?></td>
+    <td style="width:4%"><font color="white"><center><?php include("../cache/$name/energy/2-euamount.html");?></td> 
+    <td style="width:3%"><font color="white"><center><?php include("../cache/$name/energy/2-preis.html");?></td>
+	<td style="width:50%"><font color="white"><center><?php include("../cache/$name/energy/2-timeSincerunSec.html");?></td>
+    <td style="width:60%"><font color="white"><center><?php include("../cache/$name/energy/2-euconsumedkilo.html");?></td> 
+    <td style="width:30%"><font color="white"><center><?php include("../cache/$name/energy/2-cost.html");?></td> 
   </tr>
     <tr>
 	<td><font color="white"><center>3</td>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/3-ID.html");?></td>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/3-euamount.html");?></td> 
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/3-preis.html");?></td>
-	<td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/3-timeSincerunSec.html");?></td>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/3-euconsumedkilo.html");?></td> 
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/3-cost.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/$name/energy/3-ID.html");?></td>
+    <td><font color="white"><center><?php include("../cache/$name/energy/3-euamount.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/$name/energy/3-preis.html");?></td>
+	<td><font color="white"><center><?php include("../cache/$name/energy/3-timeSincerunSec.html");?></td>
+    <td><font color="white"><center><?php include("../cache/$name/energy/3-euconsumedkilo.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/$name/energy/3-cost.html");?></td> 
   </tr>
     <tr>
 	<td><font color="white"><center>4</td>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/4-ID.html");?></td>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/4-euamount.html");?></td> 
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/4-preis.html");?></td>
-	<td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/4-timeSincerunSec.html");?></td>
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/4-euconsumedkilo.html");?></td> 
-    <td><font color="white"><center><?php include("/var/www/html/daten/emeter/$name/4-cost.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/$name/energy/4-ID.html");?></td>
+    <td><font color="white"><center><?php include("../cache/$name/energy/4-euamount.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/$name/energy/4-preis.html");?></td>
+	<td><font color="white"><center><?php include("../cache/$name/energy/4-timeSincerunSec.html");?></td>
+    <td><font color="white"><center><?php include("../cache/$name/energy/4-euconsumedkilo.html");?></td> 
+    <td><font color="white"><center><?php include("../cache/$name/energy/4-cost.html");?></td> 
   </tr>
   <tr>
 	<td><font color="white"><center></td>
@@ -168,7 +152,7 @@ SpielerName:<br>
     <td><font color="white"><center></td> 
     <td><font color="white"><center></td>
 	<td><font color="orange"><center><div style="text-align:right">Gesammt Verbrauch:</td> 
-    <td><font color="orange"><center><?php include("/var/www/html/daten/emeter/$name/$name-KEU.html");?> KEU</td>
+    <td><font color="orange"><center><?php include("../cache/$name/energy/$name-KEU.html");?> KEU</td>
     <td><font color="red"><center></td> 
   </tr>
   <tr>
@@ -178,7 +162,7 @@ SpielerName:<br>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
     <td><font color="white"><center><div style="text-align:right">Gesammte Kosten:</td>
-    <td><font color="red"><center>- <?php include("/var/www/html/daten/emeter/$name/$name-cost.html");?> &euro;</td> 
+    <td><font color="red"><center>- <?php include("../cache/$name/energy/$name-cost.html");?> &euro;</td> 
   </tr>
   <tr>
 	<td><font color="white"><center></td>
@@ -187,7 +171,7 @@ SpielerName:<br>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
     <td><font color="white"><center><div style="text-align:right">Bezahlt:</td>
-    <td><font color="green"><center>+ <?php include("/var/www/html/daten/emeter/$name/$name-bezahlt.html");?> &euro;</td> 
+    <td><font color="green"><center>+ <?php include("../cache/$name/energy/$name-bezahlt.html");?> &euro;</td> 
   </tr>
   <tr>
 	<td><font color="white"><center></td>
@@ -205,7 +189,7 @@ SpielerName:<br>
     <td><font color="white"><center></td>
 	<td><font color="white"><center></td> 
     <td><font color="white"><center><div style="text-align:right">Aktuell Offen:</td>
-    <td><font color="orange"><center> <?php include("/var/www/html/daten/emeter/$name/$name-neuekosten.html");?> &euro;</td> 
+    <td><font color="orange"><center> <?php include("../cache/$name/energy/$name-neuekosten.html");?> &euro;</td> 
   </tr>
 </table>
 </font>
@@ -228,4 +212,3 @@ SpielerName:<br>
 </table>
 </body> 
 </html>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

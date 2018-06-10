@@ -1,8 +1,7 @@
 <?php
 session_start();
-require '/var/www/html/data/MySqlconfig.php';
+require 'config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
@@ -36,7 +35,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -60,13 +59,13 @@ if(!isset($_SESSION['userid']) && isset($_COOKIE['identifier']) && isset($_COOKI
 if(!isset($_SESSION['userid'])) {
  die('<center></br></br><body style="background-color:#151515"><font color="#01DF01">Bitte zuerst <a href="login.php">Einloggen</a>');
  	//schreibt den Sünder in den Log.
-	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+	$myfile = fopen("cache/log/system/system-log.html", "a");
 	fwrite ($myfile, "Spieler: $username Loggte sich ein(WEB).</br>");
 	fclose($myfile);
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
+	$datum = date("d.m.y-H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+	$myfile = fopen("cache/log/system/system-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 }
@@ -80,15 +79,24 @@ session_destroy();
 setcookie("identifier","",time()-(3600*24*365)); 
 setcookie("securitytoken","",time()-(3600*24*365)); 
  
-echo "Logout erfolgreich";
+echo "<center></br></br><body style='background-color:#151515'><font color='#01DF01'>Logout erfolgreich <br><br> Anmelden <a href='login.php'>Login</a>";
 	 //schreibt den Sünder in den Log.
-	$myfile = fopen("/var/www/html/daten/log/log.html", "a");
+	$myfile = fopen("cache/log/system/system-log.html", "a");
 	fwrite ($myfile, "Spieler: $username Loggte sich aus(WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
+	$datum = date("d.m.y-H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/log/date.html", "a");
+	$myfile = fopen("cache/log/system/system-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
 ?>
+	<html> 
+		<head>
+			<meta charset="utf-8"> 
+			<meta name="description" content="Economy Expansion">
+			<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Economy Expansion, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
+			<meta name="author" content="Michael Kux">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>EE :: Logout</title> 
+		</head> 

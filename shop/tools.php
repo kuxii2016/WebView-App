@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('../config/rcon.php');
+require '../config/config.php';
+require '../config/Multiplikator.php';
+require '../config/IDs.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
 
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
@@ -38,7 +38,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -86,7 +86,7 @@ if ($username !== false && $theme == 1) {
 	<meta name="keywords" content="Gaming, Minecraft, Mods, Multiplayer, Nuclear Gaming, Kuxii, Ic2, Buildcraft, Railcraft, Computercraft, Citybuild, Economy System, German, Englisch, no Lagg, Infinity Silence Gaming, Tekkit">
 	<meta name="author" content="Michael Kux">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NG :: Werkzeug Shop</title> 
+	<title>EE :: Werkzeug Shop</title> 
 </head> 
 <body> 
 	<h1>Werkzeug Shop</h1></br>
@@ -100,49 +100,49 @@ if ($username !== false && $theme == 1) {
   
   <tr>
     <td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-    <td><?php echo "<img src=\img/stone_pickaxe.png ALT=40&euro;, title=40&euro;>";?></td> 
+    <td><?php echo "<img src=stone_pickaxe.png ALT=40&euro;, title=40&euro;>";?></td> 
     <td><font color="white">40 €</td>
   </tr>
   <tr>
     <td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-    <td><?php echo "<img src=\img/stone_shovel.png ALT=20&euro;, title=20&euro;>";?></td>
+    <td><?php echo "<img src=stone_shovel.png ALT=20&euro;, title=20&euro;>";?></td>
     <td><font color="white">20 €</td>
   </tr>
     <tr>
 	<td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-    <td><?php echo "<img src=\img/stone_axe.png ALT=40&euro;, title=40&euro;>";?></td>
+    <td><?php echo "<img src=stone_axe.png ALT=40&euro;, title=40&euro;>";?></td>
     <td><font color="white">40 €</td>
   </tr>
   
     <tr>
      <td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
-    <td><?php echo "<img src=\img/iron_pickaxe.png ALT=400&euro;, title=400&euro;>";?></td> 
+    <td><?php echo "<img src=iron_pickaxe.png ALT=400&euro;, title=400&euro;>";?></td> 
     <td><font color="white">400 €</td>
   </tr>
   <tr>
     <td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;5</td>
-    <td><?php echo "<img src=\img/iron_shovel.png ALT=200&euro;, title=200&euro;>";?></td>
+    <td><?php echo "<img src=iron_shovel.png ALT=200&euro;, title=200&euro;>";?></td>
     <td><font color="white">200 €</td>
   </tr>
     <tr>
 	<td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;6</td>
-    <td><?php echo "<img src=\img/iron_axe.png ALT=400&euro;, title=400&euro;>";?></td>
+    <td><?php echo "<img src=iron_axe.png ALT=400&euro;, title=400&euro;>";?></td>
     <td><font color="white">400 €</td>
   </tr>
   
     <tr>
      <td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;7</td>
-    <td><?php echo "<img src=\img/dia_pickaxe.png ALT=4000&euro;, title=4000&euro;>";?></td> 
+    <td><?php echo "<img src=dia_pickaxe.png ALT=4000&euro;, title=4000&euro;>";?></td> 
     <td><font color="white">650 €</td>
   </tr>
   <tr>
     <td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;8</td>
-    <td><?php echo "<img src=\img/dia_shovel.png ALT=2000&euro;, title=2000&euro;>";?></td>
+    <td><?php echo "<img src=dia_shovel.png ALT=2000&euro;, title=2000&euro;>";?></td>
     <td><font color="white">250 €</td>
   </tr>
     <tr>
 	<td><font color="white">&nbsp;&nbsp;&nbsp;&nbsp;9</td>
-    <td><?php echo "<img src=\img/dia_axe.png ALT=4000&euro;, title=4000&euro;>";?></td>
+    <td><?php echo "<img src=dia_axe.png ALT=4000&euro;, title=4000&euro;>";?></td>
     <td><font color="white">650 €</td>
   </tr>
 </table>
@@ -247,49 +247,49 @@ $rcon = new Rcon($host, $port, $password, $timeout);
 	$rcon->sendCommand("give $username $idp $menge");
 	$rcon->sendCommand("wallet $username remove $preis");
 	$rcon->sendCommand("tell $username Danke für deinen Einkauf.!");
-    //Aktuelle Zeiterfassung
+     //Aktuelle Zeiterfassung
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
+	$datum = date("d.m.y-H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-out.html", "a");
 	fwrite ($myfile, $preis. " &euro;</br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
-	fwrite ($myfile,"$username :Einkauf - ITEM: $idp - ST: $menge </br>");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-vz.html", "a");
+	fwrite ($myfile,"Einkauf - ITEM: $tool - ST: $menge </br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
+	$myfile = fopen("../cache/$username/bank/$username-$uuid-in.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 	//----------------------StaatsKasse Konto Option
 	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
 	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "a");
 	fwrite ($myfile, $gMwSt. " €</br>");
 	fclose($myfile);	
 	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "a");
-	fwrite ($myfile,"$username :Einkauf - ITEM: $idp - ST: $menge </br>");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "a");
+	fwrite ($myfile,"$username :Einkauf - ITEM: $tool - ST: $menge </br>");
 	fclose($myfile);	
 	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "a");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
 	
 	//Staats Guthaben
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
 	$sbetrag = fgets($myfile);
 	//Zahlung an Staatskasse
 	$nsbetrag = $gMwSt + $sbetrag;
-	$myfile = fopen("/var/www/html/daten/bank/Staat/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "w");
+	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "w");
 	fwrite ($myfile, $nsbetrag);
 	fclose($myfile);
 

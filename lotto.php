@@ -1,32 +1,24 @@
 <?php
 session_start();
-require_once('/var/www/html/data/rcon.php');
-require '/var/www/html/data/Pconfig.php';
-require '/var/www/html/data/MySqlconfig.php';
-require '/var/www/html/data/Multiplikator.php';
+require_once('config/rcon.php');
+require 'config/config.php';
 $pdo = new PDO($mysql, $dbuser, $pass);
-
 $statement = $pdo->prepare("SELECT * FROM users WHERE id = :id");
 $result = $statement->execute(array('id' => $_SESSION['userid']));
 $dbdata = $statement->fetch();
-//USER Daten
-//----------
-//---Spieler-Name
 $userID = $dbdata['id'];
-//---Spieler-Name
 $username = $dbdata['name'];
-//---Spieler-UUID
 $uuid = $dbdata['uuid'];
-//---Spieler-Geld
 $geld = $dbdata['geld'];
-//---Spieler-Theme
 $theme = $dbdata['theme'];
-//---Spieler-Rechte
 $rechte = $dbdata['rechte'];
-//---Spieler-Box
 $rechte = $dbdata['box1'];
-
-//		LOGIN Prüfung
+if($dbdata['sprache'] == 1){
+require 'conversation/1.php';
+}
+elseif($dbdata['sprache'] == 2){
+require 'conversation/2.php';
+}
 function random_string() {
  if(function_exists('random_bytes')) {
  $bytes = random_bytes(16);
@@ -38,7 +30,7 @@ function random_string() {
  $bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
  $str = bin2hex($bytes); 
  } else {
- $str = md5(uniqid('euer_geheimer_string', true));
+ $str = md5(uniqid('$mcrypt_salt', true));
  } 
  return $str;
 }
@@ -63,11 +55,11 @@ if(!isset($_SESSION['userid'])) {
  die('Bitte zuerst <a href="login.php">Einloggen</a>');
 }
 ?><center>
-<?php //Rcon Connect
+<?php
 use Thedudeguy\Rcon;
 $rcon = new Rcon($host, $port, $password, $timeout);
 ?>
-<?php //Menü Theme
+<?php 
 if ($username !== false && $theme == 1) {
     echo "<body style='background-color:#151515'><font color='#01DF01'>";
 } elseif ($username !== false && $theme == 2) {
@@ -93,7 +85,7 @@ if ($username !== false && $theme == 1) {
 	<title>NG :: Lotto</title> 
 </head> 
 <body> 
-	<h1>Nuclear Gaming Lotterie</h1></br>
+	<h1>EE Lotterie</h1></br>
 <form action="" method="post">
 zahl1: <input type="text" name="Zahl1" value="1 - 49"/><br />
 zahl2: <input type="text" name="Zahl2" value="1 - 49"/><br />
@@ -104,16 +96,12 @@ zahl6: <input type="text" name="Zahl6" value="1 - 49"/><br />
 <input type="Submit" value="Spielen" name="spielen" />
 </form>
 <?php
-//Jackpot
-$myfile = fopen("/var/www/html/daten/lotto/max-jackpot.txt", "r");
+$myfile = fopen("cache/lotto/lotto/max-jackpot.txt", "r");
 $max = fgets($myfile);
-//Jackpot
-$myfile = fopen("/var/www/html/daten/lotto/jackpot.txt", "r");
+$myfile = fopen("cache/lotto/lotto/jackpot.txt", "r");
 $nbetrag = fgets($myfile);
-
 echo "Aktueller Preiss 100 &euro;";
 echo "<p style='color: red'>Im Jackpot: $nbetrag &euro;</br><p style='color: blue'> Letzter Gewinn: $max &euro;</p></br></br>";
-
 $spBetrag = 100;
 $zahl1 = $_POST["Zahl1"];
 $zahl2 = $_POST["Zahl2"];
@@ -126,39 +114,27 @@ if(isset($_POST['spielen']))
 	if ($rcon->connect())
 	{
 	$rcon->sendCommand("wallet $username remove $spBetrag");
-	
-    //Aktuelle Zeiterfassung
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
+	$datum = date("d.m.y-H:i", $timestamp);
+	$myfile = fopen("cache/$username/bank/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
-	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
+	$myfile = fopen("cache/$username/bank/$username-$uuid-out.html", "a");
 	fwrite ($myfile, $spBetrag. " &euro; - </br>");
-	fclose($myfile);	
-	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
+	fclose($myfile);
+	$myfile = fopen("cache/$username/bank/$username-$uuid-vz.html", "a");
 	fwrite ($myfile,"Gl&uuml;cksspiel - Lotto </br>");
-	fclose($myfile);	
-	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
+	fclose($myfile);
+	$myfile = fopen("cache/$username/bank/$username-$uuid-in.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
-//Jackpot
-$myfile = fopen("/var/www/html/daten/lotto/jackpot.txt", "r");
+$myfile = fopen("cache/lotto/lotto/jackpot.txt", "r");
 $sbetrag = fgets($myfile);
-//Zahlung an Staatskasse
 $nsbetrag = $sbetrag + $spBetrag;
-$myfile = fopen("/var/www/html/daten/lotto/jackpot.txt", "w");
+$myfile = fopen("cache/lotto/lotto/jackpot.txt", "w");
 fwrite ($myfile, $nsbetrag);
 fclose($myfile);
-
 sleep(1);
-
-
-
 sleep(1);
 srand ((double)microtime()*1000000);
 for($i=1; $i<7; $i++){
@@ -168,31 +144,24 @@ for($i=1; $i<7; $i++){
  
 $arrayLotto = explode(" ", trim($vals));
 sort($arrayLotto);
-//Zahlen aus der Ziehung.
 $zZahl1 = $arrayLotto[0];
 $zZahl2 = $arrayLotto[1];
 $zZahl3 = $arrayLotto[2];
 $zZahl4 = $arrayLotto[3];
 $zZahl5 = $arrayLotto[4];
 $zZahl6 = $arrayLotto[5];
-
 $Lottozahlen = implode(" ", $arrayLotto);
 echo "Deine Zahlen:</br>";
 echo "$zahl1 $zahl2 $zahl3 $zahl4 $zahl5 $zahl6</br>";
-//echo $Lottozahlen;
 echo "</br>";
 echo "Aktuelle Ziehung:</br>";
 echo "$arrayLotto[0] $arrayLotto[1] $arrayLotto[2] $arrayLotto[3] $arrayLotto[4] $arrayLotto[5]";
-
 $gezogene_zahlen = array("$zahl1", "$zahl2", "$zahl3", "$zahl4", "$zahl5", "$zahl6");
 $getippteZahlen = array ("$zZahl1", "$zZahl2", "$zZahl3", "$zZahl4", "$zZahl5", "$zZahl6");
 $richtige_zahlen = count(array_intersect($getippteZahlen, $gezogene_zahlen));
 echo "</br></br>Richtige Zahlen: ".$richtige_zahlen;
 echo "</br>"; 
 $falsche_zahlen = count(array_diff($getippteZahlen, $gezogene_zahlen));
-//echo "</br>Falsche zahlen:</br>". $falsche_zahlen."</br>";
-
-//Gewinn Funktion
 	if ($richtige_zahlen == 1)
 	{
 		$aGewinn = 0;
@@ -252,22 +221,18 @@ $falsche_zahlen = count(array_diff($getippteZahlen, $gezogene_zahlen));
 	}
 echo "<p style='color: green'>Du Gewinnst: $aGewinn &euro;";
 sleep(1);
-//Jackpot Aktualisierrung
-$myfile = fopen("/var/www/html/daten/lotto/jackpot.txt", "r");
+$myfile = fopen("cache/lotto/lotto/jackpot.txt", "r");
 $xbetrag = fgets($myfile);
-//Korrektur Jackpot
 $nxsbetrag = $xbetrag - $aGewinn;
-$myfile = fopen("/var/www/html/daten/lotto/jackpot.txt", "w");
+$myfile = fopen("cache/lotto/lotto/jackpot.txt", "w");
 fwrite ($myfile, $nxsbetrag);
 fclose($myfile);
-//GS Admin Debug
-$myfile = fopen("/var/www/html/daten/log/spieler/$username-log.html", "a");
+$myfile = fopen("cache/log/player/$username-log.html", "a");
 fwrite ($myfile, "Spieler: $username Spielte Lotto und Gewann $aGewinn &euro; (WEB)</br>");
 fclose($myfile);
 $timestamp = time();
-$datum = date("d.m/H:i", $timestamp);
-//schreibt die Zeit ins Doc.
-$myfile = fopen("/var/www/html/daten/log/spieler/$username-date.html", "a");
+$datum = date("d.m.y-H:i", $timestamp);
+$myfile = fopen("cache/log/player/$username-date.html", "a");
 fwrite ($myfile, $datum. "&nbsp;</br>");
 fclose($myfile);
 }
@@ -282,27 +247,21 @@ else
 	$rcon->sendCommand("say $username Kassiert $aGewinn EUR, Im Lotto.!");
 	$rcon->sendCommand("say Hatte $richtige_zahlen Richtige Zahl, Im Lotto.!");
 	$rcon->sendCommand("wallet $username add $aGewinn");
-    //Aktuelle Zeiterfassung
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-date.html", "a");
+	$datum = date("d.m.y-H:i", $timestamp);
+	$myfile = fopen("cache/$username/bank/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
-	//schreibt die betrag ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-out.html", "a");
+	$myfile = fopen("cache/$username/bank/$username-$uuid-out.html", "a");
 	fwrite ($myfile, "&nbsp; </br>");
-	fclose($myfile);	
-	//schreibt die verwendungs Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-vz.html", "a");
+	fclose($myfile);
+	$myfile = fopen("cache/$username/bank/$username-$uuid-vz.html", "a");
 	fwrite ($myfile,"Gl&uuml;cksspiel - Lottogewinn </br>");
-	fclose($myfile);	
-	//schreibt die ausgabe Zweck ins Doc.
-	$myfile = fopen("/var/www/html/daten/bank/$username/$username-$uuid-in.html", "a");
+	fclose($myfile);
+	$myfile = fopen("cache/$username/bank/$username-$uuid-in.html", "a");
 	fwrite ($myfile, $aGewinn. " &euro;</br>");
 	fclose($myfile);
-	//Letzter Gewinn
-$myfile = fopen("/var/www/html/daten/lotto/max-jackpot.txt", "w");
+$myfile = fopen("cache/lotto/lotto/max-jackpot.txt", "w");
 fwrite ($myfile, $aGewinn);
 fclose($myfile);
 		}
@@ -310,21 +269,17 @@ fclose($myfile);
 	{
 	}
 	}
-//echo"DEBUG:</br>";
-//print_r ($gezogene_zahlen);
-//echo"</br>DEBUG:</br>";
-//print_r ($getippteZahlen);
 ?> 
 </br></br>
 <table>
 	<tr>
 		<form action="Casino.php">
 	<td>
-		<input style="width:160;height:32px" type="submit" value="zur&uuml;ck"></td>
+		<input style="width:160;height:32px" type="submit" value="<?php echo $zuruek; ?>"></td>
 	</form>
 		<form action="index.php">
 	<td>
-		<input style="width:160;height:32px" type="submit" value="Hauptmenü"></td>
+		<input style="width:160;height:32px" type="submit" value="<?php echo $PageIndex; ?>"></td>
 	</form>
 </tr>
 </table>
