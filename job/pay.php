@@ -105,7 +105,7 @@ if(!isset($_SESSION['userid'])) {
 	$jobTitles = $PLohnVZ;
 	}
 ?>
-<?php 	//Menü Theme
+<?php
 if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#151515'><font color='#01DF01'>";
 }elseif ($username !== false && $theme == 2){
@@ -120,26 +120,19 @@ if ($username !== false && $theme == 1) {
 	echo "<body style='background-color:#FFFFFF'>";}
 ?>
 <?php
-	//Aktuelle Zeiterfassung
 	$timestamp = time();
 	$datum = date("d.m.y-H:i", $timestamp);
 	$datum1 = date("d.m.y-H:i", $timestamp);
-	//Altes Datum Stunden
 	$myfile = fopen("../cache/$username/job/Lohnstufe.txt", "r");
 	$datetime = fgets ($myfile);	
-	//Bereitsgezahlte Stunden
 	$myfile = fopen("../cache/$username/job/Auszahlung.txt", "r");
 	$Auszahlung = fgets ($myfile);
-	//Bereitsgezahlte Stunden
 	$myfile = fopen("../cache/$username/job/Stunden-bezahlt.txt", "r");
 	$bezahltdavon = fgets ($myfile);
-	//Lohnstufe Stunden
 	$myfile = fopen("../cache/$username/job/Lohnstufe.txt", "r");
 	$lohnstufe = fgets ($myfile);
-	//Neue Stunden
 	$myfile = fopen("../cache/$username/job/Stunden.txt", "r");
 	$stundenAktuell = fgets ($myfile);
-	//Alte Stunden
 	$myfile = fopen("../cache/$username/job/Stunden-bezahlt.txt", "r");
 	$stundenAlt = fgets ($myfile);
 	fclose($myfile);
@@ -148,7 +141,6 @@ if ($username !== false && $theme == 1) {
 	fwrite ($myfile, $stundenneu);
 	fclose($myfile);
 	$newState = $dbdata['geld'] + $Auszahlung;
-	//server Verbindung
 	use Thedudeguy\Rcon;
 	$rcon = new Rcon($host, $port, $password, $timeout);
 	if ($rcon->connect())
@@ -156,61 +148,45 @@ if ($username !== false && $theme == 1) {
 	$rcon->sendCommand("wallet $username add $Auszahlung");
 	$rcon->sendCommand("tell $username Lohn in höhe von $Auszahlung $GuthabenIcon wurde Eingezahlt.Ihre $button1.!");
 	}
-	//schreibt die Zeit ins Doc.
 	$myfile = fopen("../cache/$username/bank/$username-$uuid-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
-	//schreibt die betrag ins Doc.
 	$myfile = fopen("../cache/$username/bank/$username-$uuid-in.html", "a");
 	fwrite ($myfile, $Auszahlung. " $GuthabenIcon  </br>");
 	fclose($myfile);	
-	//schreibt die verwendungs Zweck ins Doc.
 	$myfile = fopen("../cache/$username/bank/$username-$uuid-vz.html", "a");
 	fwrite ($myfile, $jobTitles." - Lohnstufe: $lohnstufe vom:".$datum1."</br>");
 	fclose($myfile);	
-	//schreibt die ausgabe Zweck ins Doc.
 	$myfile = fopen("../cache/$username/bank/$username-$uuid-out.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
-	//holt den Steuer Betrag
 	$myfile = fopen("../cache/$username/job/Steuern.txt", "r");
 	$Steuerbetrag = fgets($myfile);
-	//Altes Staatsguthaben
 	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "r");
 	$sbetrag = fgets($myfile);
-	//Zahlung an Staatskasse
 	$nsbetrag = $Steuerbetrag + $sbetrag;
 	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934.txt", "w");
 	fwrite ($myfile, $nsbetrag);
 	fclose($myfile);	
-	//----------------------StaatsKasse Konto Option
-	//schreibt die Zeit ins Doc.
 	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-date.html", "a");
 	fwrite ($myfile, $datum. "</br>");
 	fclose($myfile);
-	//schreibt die betrag ins Doc.
 	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-in.html", "a");
 	fwrite ($myfile, $Steuerbetrag. " €  </br>");
 	fclose($myfile);	
-	//schreibt die verwendungs Zweck ins Doc.
 	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-vz.html", "a");
 	fwrite ($myfile,"Steuern: $jobTitles - $username </br>");
 	fclose($myfile);	
-	//schreibt die ausgabe Zweck ins Doc.
 	$myfile = fopen("../cache/Staat/bank/Staat-1988abcd-4321-1844-9876-9876aghd8934-out.html", "a");
 	fwrite ($myfile, "&nbsp;" ."</br>");
 	fclose($myfile);
-	//Kontostand Update
 	$statement = $pdo->prepare("UPDATE `users` SET `geld` = '$newState' WHERE name = '$username' ");
 	$result = $statement->execute(array("UPDATE `users` SET `geld` = '$newState' WHERE name = '$username' "));
-	//Umleitung und Löschem des CacheFile
-	// Admin Debug
 	$myfile = fopen("../cache/log/player/$username-log.html", "a");
 	fwrite ($myfile, "Spieler: $username $jobTitles - Lohnstufe: $lohnstufe(WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
 	$datum = date("d.m.y-H:i", $timestamp);
-	//schreibt die Zeit ins Doc.
 	$myfile = fopen("../cache/log/player/$username-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
 	fclose($myfile);
@@ -218,7 +194,17 @@ if ($username !== false && $theme == 1) {
 	$myfile = fopen("../cache/$username/job/Datum.txt", "w");
 	fwrite ($myfile, $datum1);
 	fclose($myfile);
-	//Boni
+	//Job Wechsel Fix
+	$datawallet = "$pinfo/$uuid.json";
+    $jsondata = file_get_contents($datawallet);
+	$data = json_decode($jsondata,true);
+	$namen = $data;
+	$tdata = floor($namen['timePlayed']/1000);
+	$secs = $tdata;
+	$myfile = fopen("../cache/$username/sozial/$username-$uuid.Time.txt", "w");
+	$txt = "$tdata";
+	fwrite ($myfile, $txt);
+	fclose($myfile);
 	$bonigeld = 0;
 	$myfile = fopen("../cache/$username/job/Bonus.txt", "w");
 	fwrite ($myfile, $bonigeld);
