@@ -245,9 +245,6 @@ $job = $_POST['job'];
 <form action="index.php">
 <td><input style="width:100;height:32px" type="submit" value="<?php echo $PageIndex ?>"></td>
 </form>
-<form action="job.php">
-<td><input style="width:100;height:32px" type="submit" value="Lohn B&uuml;ro"></td>
-</form>
 </tr>
 </table>
 </body> 

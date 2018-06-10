@@ -163,7 +163,7 @@ if ($username !== false && $theme == 1) {
 	fwrite ($myfile, "Spieler: $username bakam $betrag € für Grundsicherrung (WEB)</br>");
 	fclose($myfile);
 	$timestamp = time();
-	$datum = date("d.m/H:i", $timestamp);
+	$datum = date("d.m.y-H:i", $timestamp);
 	//schreibt die Zeit ins Doc.
 	$myfile = fopen("../cache/log/player/$username-date.html", "a");
 	fwrite ($myfile, $datum. "&nbsp;</br>");
