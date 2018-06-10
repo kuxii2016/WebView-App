@@ -79,8 +79,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `passwort`, `name`, `geld`, `uuid`, `job`, `zID`, `zID1`, `zID2`, `zID3`, `theme`, `rechte`, `box1`, `box2`, `sprache`, `created_at`, `updated_at`) VALUES
-(1, 'staat@admin.de', '$2y$10$i1GUklCo4a9IvDQ6nf38jubuTeRRx3myMLsncoIeJ2/.Bw5kLUW2K', 'Staat', '30000', '1988abcd-4321-1844-9876-9876aghd8934', '', '', '', '', '', '', '3', '', '', '1', '2018-06-07 21:07:39', NULL),
-(2, 'Akw@admin.de', '$2y$10$7LwYHyPdpMHGowC3NZ/LFeh9tcSCv4VHbOfw728eYviR0Q0z24dIm', 'Akw', '302', '9e95b13e-4ab9-40a7-8cfe-9eed07f80d64', '', '', '', '', '', '1', '3', '1', '1', '1', '2018-06-07 21:10:01', NULL);
+(1, 'staat@admin.de', '$2y$10$poAxAArjjPpBZPCfBQxaxO.XPI0nFwI0FyVMjZVV22XoZ0asE2kKK', 'Staat', '30000', '1988abcd-4321-1844-9876-9876aghd8934', '', '', '', '', '', '', '3', '', '', '1', '2018-06-07 21:07:39', NULL),
+(2, 'Akw@admin.de', '$2y$10$poAxAArjjPpBZPCfBQxaxO.XPI0nFwI0FyVMjZVV22XoZ0asE2kKK', 'Akw', '302', '9e95b13e-4ab9-40a7-8cfe-9eed07f80d64', '', '', '', '', '', '1', '3', '1', '1', '1', '2018-06-07 21:10:01', NULL);
 
 --
 -- Indizes der exportierten Tabellen
